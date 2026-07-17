@@ -1,0 +1,409 @@
+@import "tailwindcss";
+
+@config "../../tailwind.config.js";
+
+@theme {
+    /* SANAD Design Tokens as Tailwind theme values */
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    --color-severity-critical: var(--severity-critical);
+    --color-severity-critical-bg: var(--severity-critical-bg);
+    --color-severity-high: var(--severity-high);
+    --color-severity-high-bg: var(--severity-high-bg);
+    --color-severity-medium: var(--severity-medium);
+    --color-severity-medium-bg: var(--severity-medium-bg);
+    --color-severity-low: var(--severity-low);
+    --color-severity-low-bg: var(--severity-low-bg);
+
+    --color-sanad-primary: #1F6F78;
+    --color-sanad-secondary: #3BA99C;
+    --color-sanad-success: #2E8B57;
+    --color-sanad-warning: #F4B740;
+    --color-sanad-danger: #D9534F;
+    --color-sanad-bg: #F7FAF9;
+    --color-sanad-surface: #FFFFFF;
+    --color-sanad-text: #24333A;
+    --color-sanad-muted: #6B7A80;
+
+    --radius-DEFAULT: var(--radius);
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+    --radius-2xl: calc(var(--radius) + 8px);
+    --radius-3xl: calc(var(--radius) + 16px);
+
+    --font-sans: var(--font-plus-jakarta), 'Plus Jakarta Sans', sans-serif;
+    --font-display: var(--font-manrope), 'Manrope', sans-serif;
+
+    --shadow-card: 0 1px 3px rgba(31,111,120,0.06), 0 4px 16px rgba(31,111,120,0.04);
+    --shadow-elevated: 0 4px 24px rgba(31,111,120,0.10), 0 1px 4px rgba(31,111,120,0.06);
+    --shadow-chat: 0 2px 12px rgba(31,111,120,0.12);
+
+    --animate-spin-slow: spin 2s linear infinite;
+    --animate-pulse-soft: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@layer base {
+    :root {
+        /* SANAD Design Tokens */
+        --color-primary-raw: #1F6F78;
+        --color-secondary-raw: #3BA99C;
+        --color-success-raw: #2E8B57;
+        --color-warning-raw: #F4B740;
+        --color-danger-raw: #D9534F;
+        --color-background-raw: #F7FAF9;
+        --color-surface-raw: #FFFFFF;
+        --color-text-raw: #24333A;
+        --color-muted-raw: #6B7A80;
+
+        --background: #F7FAF9;
+        --foreground: #24333A;
+        --primary: #1F6F78;
+        --primary-foreground: #FFFFFF;
+        --secondary: #3BA99C;
+        --secondary-foreground: #FFFFFF;
+        --accent: #E8F5F4;
+        --accent-foreground: #1F6F78;
+        --muted: #EDF2F1;
+        --muted-foreground: #6B7A80;
+        --card: #FFFFFF;
+        --card-foreground: #24333A;
+        --border: #D8E4E2;
+        --input: #EDF2F1;
+        --ring: #3BA99C;
+        --radius: 12px;
+        --font-sans: var(--font-plus-jakarta), 'Plus Jakarta Sans', sans-serif;
+        --font-display: var(--font-manrope), 'Manrope', sans-serif;
+
+        /* Severity colors */
+        --severity-critical: #C0392B;
+        --severity-critical-bg: #FDF2F1;
+        --severity-critical-border: #E8B4B0;
+        --severity-high: #D4651A;
+        --severity-high-bg: #FEF5EE;
+        --severity-high-border: #F0C4A0;
+        --severity-medium: #B5850A;
+        --severity-medium-bg: #FFFBEE;
+        --severity-medium-border: #EDD89A;
+        --severity-low: #2E8B57;
+        --severity-low-bg: #F0FAF4;
+        --severity-low-border: #A8DFC0;
+    }
+
+    * {
+        box-sizing: border-box;
+        border-color: var(--border);
+    }
+
+    body {
+        background-color: var(--background);
+        color: var(--foreground);
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p {
+        margin: 0;
+    }
+}
+
+@utility font-display {
+    font-family: var(--font-display);
+}
+
+@utility text-balance {
+    text-wrap: balance;
+}
+
+@utility tabular-nums {
+    font-variant-numeric: tabular-nums;
+}
+
+@utility severity-critical-row {
+    border-left: 4px solid var(--severity-critical);
+    background-color: var(--severity-critical-bg);
+}
+
+@utility severity-high-row {
+    border-left: 4px solid var(--severity-high);
+    background-color: var(--severity-high-bg);
+}
+
+@utility message-bubble-enter {
+    animation: messageBubble 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes messageBubble {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@utility card-reveal {
+    animation: cardReveal 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes cardReveal {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@utility badge-pop {
+    animation: badgePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+}
+
+@keyframes badgePop {
+    from {
+        opacity: 0;
+        transform: scale(0.7);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@utility typing-dot {
+    animation: typingDot 1.4s infinite ease-in-out;
+}
+
+@keyframes typingDot {
+
+    0%,
+    80%,
+    100% {
+        transform: scale(0.6);
+        opacity: 0.4;
+    }
+
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@utility fade-in-up {
+    animation: fadeInUp 0.4s ease forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@utility slide-in-right {
+    animation: slideInRight 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@utility progress-bar {
+    animation: progressFill 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes progressFill {
+    from {
+        width: 0%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .message-bubble-enter,
+    .card-reveal,
+    .badge-pop,
+    .typing-dot,
+    .fade-in-up,
+    .slide-in-right,
+    .progress-bar {
+        animation: none;
+    }
+}
+
+@utility scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--muted) transparent;
+
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--border);
+        border-radius: 2px;
+    }
+}
+
+@utility rtl-text {
+    direction: rtl;
+    text-align: right;
+    font-feature-settings: "kern" 1;
+}
+
+@utility confidence-bar {
+    background: linear-gradient(90deg, var(--secondary) 0%, #5EC8D0 100%);
+    border-radius: 9999px;
+    height: 6px;
+    transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Component classes using plain CSS instead of @apply for TW v4 compatibility */
+@utility btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.75rem;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    transition: all 150ms;
+    &:hover { opacity: 0.9; }
+    &:active { transform: scale(0.95); }
+    &:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring); }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+@utility btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.75rem;
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    color: var(--foreground);
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    transition: all 150ms;
+    &:hover { background-color: var(--muted); }
+    &:active { transform: scale(0.95); }
+    &:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring); }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+@utility btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    color: var(--muted-foreground);
+    font-weight: 500;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    transition: all 150ms;
+    &:hover { background-color: var(--muted); color: var(--foreground); }
+    &:active { transform: scale(0.95); }
+    &:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring); }
+}
+
+@utility btn-danger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.75rem;
+    background-color: #D9534F;
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    transition: all 150ms;
+    &:hover { background-color: #C0392B; }
+    &:active { transform: scale(0.95); }
+    &:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--background), 0 0 0 4px #D9534F; }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+@utility input-base {
+    width: 100%;
+    padding: 0.625rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--input);
+    background-color: var(--card);
+    color: var(--foreground);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    transition: all 150ms;
+    &::placeholder { color: var(--muted-foreground); }
+    &:focus { outline: none; box-shadow: 0 0 0 2px var(--ring); border-color: transparent; }
+}
+
+@utility card-base {
+    background-color: var(--card);
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+@utility section-label {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+}
