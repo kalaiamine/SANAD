@@ -521,48 +521,24 @@ export default function RegisterPage() {
             try {
                 let finalAuditSteps = auditSteps;
 
-                // 1. Log Info validation & Account creation to audit dossier
+                // 1. Update the dossier with any manual edits and validate the info
                 if (dossierId) {
-                    try {
-                        // Update the dossier with any manual edits the user made
-                        await updateAuditIdentity(dossierId, {
-                            fullNameArabic: form.fullNameArabic,
-                            fullNameLatin: form.fullNameLatin,
-                            cin: form.cin,
-                            birthDate: form.birthDate,
-                            birthPlace: form.birthPlace,
-                            fatherName: form.fatherName,
-                            phone: form.phone,
-                            address: form.address,
-                        });
-                        
-                        await addAuditStep(dossierId, 'INFO_VALIDATION', 'SUCCESS');
-                        const finalDossier = await addAuditStep(dossierId, 'ACCOUNT_CREATED', 'SUCCESS');
-                        setAuditSteps(finalDossier.steps);
-                        finalAuditSteps = finalDossier.steps;
-                    } catch (auditErr) {
-                        console.error("Failed to write final audit steps:", auditErr);
-                        throw auditErr;
-                    }
+                    await updateAuditIdentity(dossierId, {
+                        fullNameArabic: form.fullNameArabic,
+                        fullNameLatin: form.fullNameLatin,
+                        cin: form.cin,
+                        birthDate: form.birthDate,
+                        birthPlace: form.birthPlace,
+                        fatherName: form.fatherName,
+                        phone: form.phone,
+                        address: form.address,
+                    });
+                    await addAuditStep(dossierId, 'INFO_VALIDATION', 'SUCCESS');
                 }
 
-                // 2. Trigger backend SMTP email dispatch with full KYC & AML Audit data
-                await sendKYCConfirmationEmail(form.email, {
-                    fullNameArabic: form.fullNameArabic,
-                    fullNameLatin: form.fullNameLatin,
-                    cin: form.cin,
-                    birthDate: form.birthDate,
-                    birthPlace: form.birthPlace,
-                    fatherName: form.fatherName,
-                    phone: form.phone,
-                    address: form.address,
-                    dossierId: dossierId || 'Non spécifié',
-                    amlLevel: amlResult?.risk_level || 'LOW',
-                    amlScore: amlResult?.risk_score || 0,
-                    auditSteps: finalAuditSteps
-                });
-
-                // 3. Secure account in MongoDB (bcrypt + JWT session)
+                // 2. Create the REAL account in MongoDB first (bcrypt + JWT session).
+                // The dossier must only be approved once the account truly exists —
+                // otherwise a failed registration poisons the CIN forever.
                 const regRes = await fetch('/api/auth/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -585,9 +561,43 @@ export default function RegisterPage() {
                 });
                 if (!regRes.ok) {
                     const regErr = await regRes.json().catch(() => ({}));
+                    if (dossierId) {
+                        try { await addAuditStep(dossierId, 'ACCOUNT_CREATED', 'FAILED', { reason: regErr.error || 'registration_failed' }); } catch { /* audit best-effort */ }
+                    }
                     throw new Error(regErr.error || 'Création du compte sécurisé impossible.');
                 }
-                
+
+                // 3. Account exists — now the dossier can be approved (1 membre = 1 KYC)
+                if (dossierId) {
+                    try {
+                        const finalDossier = await addAuditStep(dossierId, 'ACCOUNT_CREATED', 'SUCCESS');
+                        setAuditSteps(finalDossier.steps);
+                        finalAuditSteps = finalDossier.steps;
+                    } catch (auditErr) {
+                        console.error('Failed to write final audit step:', auditErr);
+                    }
+                }
+
+                // 4. Send the KYC receipt email (best-effort, after real success)
+                try {
+                    await sendKYCConfirmationEmail(form.email, {
+                        fullNameArabic: form.fullNameArabic,
+                        fullNameLatin: form.fullNameLatin,
+                        cin: form.cin,
+                        birthDate: form.birthDate,
+                        birthPlace: form.birthPlace,
+                        fatherName: form.fatherName,
+                        phone: form.phone,
+                        address: form.address,
+                        dossierId: dossierId || 'Non spécifié',
+                        amlLevel: amlResult?.risk_level || 'LOW',
+                        amlScore: amlResult?.risk_score || 0,
+                        auditSteps: finalAuditSteps
+                    });
+                } catch (emailErr) {
+                    console.error('KYC email failed (non-blocking):', emailErr);
+                }
+
                 setStep(4);
             } catch (err: any) {
                 console.error("Failed to submit registration", err);

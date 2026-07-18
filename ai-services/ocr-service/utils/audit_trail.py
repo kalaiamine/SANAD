@@ -110,8 +110,9 @@ def add_step(
             "score": metadata.get("risk_score", 0),
         }
 
-    # Auto-set final status
-    if step_name == "ACCOUNT_CREATED":
+    # Auto-set final status — only a SUCCESSFUL account creation approves the dossier
+    # (a FAILED attempt must not poison the CIN: 1 membre = 1 KYC approuvé)
+    if step_name == "ACCOUNT_CREATED" and status == "SUCCESS":
         dossier["finalStatus"] = "APPROVED"
 
     _save_dossier(dossier)

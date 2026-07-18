@@ -53,6 +53,15 @@ class AuditTrailTests(unittest.TestCase):
         d2 = audit_trail.add_step(d["dossierId"], "ACCOUNT_CREATED", "SUCCESS")
         self.assertEqual(d2["finalStatus"], "APPROVED")
 
+    def test_echec_creation_compte_n_approuve_pas(self):
+        # Un échec de création de compte ne doit pas approuver le dossier
+        # ni bloquer le CIN pour une nouvelle tentative
+        d = audit_trail.create_dossier()
+        audit_trail.update_identity(d["dossierId"], {"cin": "55667788"})
+        d2 = audit_trail.add_step(d["dossierId"], "ACCOUNT_CREATED", "FAILED", {"reason": "email duplique"})
+        self.assertEqual(d2["finalStatus"], "IN_PROGRESS")
+        self.assertFalse(audit_trail.is_cin_already_registered("55667788"))
+
     def test_etape_sur_dossier_inconnu_leve_une_erreur(self):
         with self.assertRaises(ValueError):
             audit_trail.add_step("KYC-INEXISTANT", "OCR_SCAN", "SUCCESS")
