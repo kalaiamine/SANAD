@@ -1,0 +1,54 @@
+# ============================================================
+# SANAD - Lancement complet : web (Next.js) + ocr (FastAPI) + mongo
+# Usage :  docker compose up --build
+#   web   -> http://localhost:3000
+#   ocr   -> http://localhost:8001/docs
+#   mongo -> mongodb://localhost:27017/sanad
+# Prerequis : copier .env.example vers .env et renseigner les cles.
+# ============================================================
+services:
+  mongo:
+    image: mongo:7
+    container_name: sanad-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 })"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ocr:
+    build: ./ai-services/ocr-service
+    container_name: sanad-ocr
+    ports:
+      - "8001:8001"
+    env_file:
+      - .env
+    volumes:
+      # Persistance des dossiers d'audit KYC et du jeu de donnees AML
+      - ./ai-services/ocr-service/data:/app/data
+
+  web:
+    build: .
+    container_name: sanad-web
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      # A l'interieur du reseau Docker, on pointe vers les noms de services
+      MONGODB_URI: mongodb://mongo:27017/sanad
+      OCR_SERVICE_URL: http://ocr:8001
+      # Le navigateur (hors Docker) accede au service OCR via localhost
+      NEXT_PUBLIC_OCR_API_URL: http://localhost:8001
+    depends_on:
+      mongo:
+        condition: service_healthy
+      ocr:
+        condition: service_started
+
+volumes:
+  mongo_data:

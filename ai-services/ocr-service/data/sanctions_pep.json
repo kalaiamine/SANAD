@@ -1,0 +1,42 @@
+{
+    "sanctions": [
+        {"name_ar": "محمد بن علي", "name_latin": "Mohamed Ben Ali", "type": "individual", "source": "UN-SC", "reason": "Résolution 1970 (2011)"},
+        {"name_ar": "ليلى الطرابلسي", "name_latin": "Leila Trabelsi", "type": "individual", "source": "EU-SANCTIONS", "reason": "Détournement de fonds publics"},
+        {"name_ar": "بلحسن الطرابلسي", "name_latin": "Belhassen Trabelsi", "type": "individual", "source": "EU-SANCTIONS", "reason": "Détournement de fonds publics"},
+        {"name_ar": "صخر الماطري", "name_latin": "Sakher El Materi", "type": "individual", "source": "EU-SANCTIONS", "reason": "Blanchiment d'argent"},
+        {"name_ar": "عماد الطرابلسي", "name_latin": "Imed Trabelsi", "type": "individual", "source": "UN-SC", "reason": "Détournement de biens de l'État"},
+        {"name_ar": "مروان المبروك", "name_latin": "Marouane Mabrouk", "type": "individual", "source": "EU-SANCTIONS", "reason": "Complicité de corruption"},
+        {"name_ar": "محمد الناصر بن طارق", "name_latin": "Mohamed Naceur Ben Tarek", "type": "individual", "source": "OFAC-SDN", "reason": "Financement du terrorisme"},
+        {"name_ar": "أنور الحداد", "name_latin": "Anwar Haddad", "type": "individual", "source": "OFAC-SDN", "reason": "Soutien logistique terrorisme"},
+        {"name_ar": "سامي الفهري", "name_latin": "Sami Fehri", "type": "individual", "source": "CTAF-TN", "reason": "Suspicion LBC/FT"},
+        {"name_ar": "كمال اللطيف", "name_latin": "Kamel Ltaief", "type": "individual", "source": "EU-SANCTIONS", "reason": "Corruption et détournement"}
+    ],
+    "pep": [
+        {"name_ar": "قيس سعيد", "name_latin": "Kais Saied", "position": "Président de la République", "source": "GOV-TN"},
+        {"name_ar": "أحمد الحشاني", "name_latin": "Ahmed Hachani", "position": "Chef du Gouvernement", "source": "GOV-TN"},
+        {"name_ar": "نبيل عمار", "name_latin": "Nabil Ammar", "position": "Ministre des Affaires étrangères", "source": "GOV-TN"},
+        {"name_ar": "سهام البوغديري نمصية", "name_latin": "Sihem Boughdiri Nemsia", "position": "Ministre des Finances", "source": "GOV-TN"},
+        {"name_ar": "كمال الفقي", "name_latin": "Kamel Feki", "position": "Ministre de l'Intérieur", "source": "GOV-TN"},
+        {"name_ar": "ليلى جفال", "name_latin": "Leila Jaffel", "position": "Ministre de la Justice", "source": "GOV-TN"},
+        {"name_ar": "محمد علي النفطي", "name_latin": "Mohamed Ali Nafti", "position": "Secrétaire d'État", "source": "GOV-TN"},
+        {"name_ar": "عبد اللطيف المكي", "name_latin": "Abdellatif Mekki", "position": "Ancien Ministre de la Santé", "source": "GOV-TN"},
+        {"name_ar": "راشد الغنوشي", "name_latin": "Rached Ghannouchi", "position": "Ancien Président de l'ARP", "source": "GOV-TN"},
+        {"name_ar": "حسين العباسي", "name_latin": "Houcine Abassi", "position": "Ancien SG UGTT", "source": "SYNDICAT-TN"}
+    ],
+    "high_risk_regions": [
+        "القصرين", "Kasserine",
+        "جندوبة", "Jendouba",
+        "سليانة", "Siliana",
+        "الكاف", "Le Kef",
+        "سيدي بوزيد", "Sidi Bouzid",
+        "تطاوين", "Tataouine",
+        "قفصة", "Gafsa",
+        "مدنين", "Medenine"
+    ],
+    "metadata": {
+        "version": "1.0.0",
+        "last_updated": "2026-07-18",
+        "legal_basis": "Loi n° 2015-26 du 7 août 2015 relative à la lutte contre le terrorisme et la répression du blanchiment d'argent",
+        "sources": ["UN Security Council", "EU Sanctions List", "OFAC SDN", "CTAF Tunisie", "Gouvernement Tunisien"]
+    }
+}
