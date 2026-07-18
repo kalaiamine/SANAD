@@ -35,3 +35,20 @@ jest-test-results.json
 
 # Optional: if using TurboRepo or monorepo
 turbo/
+
+
+# Python virtual environments
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# IDE
+.vscode/
+.idea/
+
+# Environment variables
+.env
