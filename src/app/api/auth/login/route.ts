@@ -17,9 +17,11 @@ export async function POST(req: NextRequest) {
 
         await connectDB();
 
-        const query = email ? { email: String(email).toLowerCase() } : { cin: String(cin).trim() };
+        // Trim everything: copy-pasted credentials often carry an invisible
+        // trailing space/newline which must not cause a false "bad credentials".
+        const query = email ? { email: String(email).trim().toLowerCase() } : { cin: String(cin).trim() };
         const user = await User.findOne(query).select('+passwordHash');
-        if (!user || !(await verifyPassword(password, user.passwordHash))) {
+        if (!user || !(await verifyPassword(String(password).trim(), user.passwordHash))) {
             return NextResponse.json({ error: 'Identifiants invalides.' }, { status: 401 });
         }
 

@@ -20,14 +20,15 @@ export async function POST(req: NextRequest) {
 
         await connectDB();
 
-        const existing = await User.findOne({ $or: [{ email: email.toLowerCase() }, { cin: String(cin).trim() }] });
+        const cleanEmail = String(email).trim().toLowerCase();
+        const existing = await User.findOne({ $or: [{ email: cleanEmail }, { cin: String(cin).trim() }] });
         if (existing) {
             return NextResponse.json({ error: 'Un compte existe déjà avec cet email ou ce CIN.' }, { status: 409 });
         }
 
-        const passwordHash = await hashPassword(password);
+        const passwordHash = await hashPassword(String(password).trim());
         const user = await User.create({
-            email: email.toLowerCase(),
+            email: cleanEmail,
             passwordHash,
             cin: String(cin).trim(),
             dossierId,
