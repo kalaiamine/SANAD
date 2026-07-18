@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { Shield, Send, Paperclip, X, Loader2, FileText, Image as ImageIcon, ArrowLeft } from 'lucide-react';
 import { mockChat, mockSettlement, mockFraud, type SettlementResult, type FraudResult } from '@/lib/mockServices';
+import { uploadDocument, type InvoiceData } from '@/services/ocrService';
 
 interface Message {
     id: string;
@@ -208,7 +209,23 @@ export default function ChatPage() {
         }
         setUploads((prev) => prev.map((u) => (u.id === id ? { ...u, status: 'processing', progress: 100 } : u)));
 
-        // Simulate AI analysis
+        // Call real OCR for invoice/document types
+        let ocrInvoiceData: InvoiceData | null = null;
+        if (type === 'invoice') {
+            setAnalyzingMessage('Analyzing your document...');
+            setIsAnalyzing(true);
+            try {
+                const ocrResult = await uploadDocument(file);
+                if (ocrResult.documentType === 'invoice') {
+                    ocrInvoiceData = ocrResult.extractedData as InvoiceData;
+                }
+            } catch {
+                // OCR failed, will fall back to mock data
+            }
+            setIsAnalyzing(false);
+        }
+
+        // AI analysis steps
         const analyzeMessages = [
             'Analyse de vos documents...',
             'Estimation des dommages...',
@@ -222,8 +239,17 @@ export default function ChatPage() {
         setIsAnalyzing(false);
         setUploads((prev) => prev.map((u) => (u.id === id ? { ...u, status: 'completed' } : u)));
 
-        // Get AI results
+        // Get AI results and merge OCR invoice data if available
         const [settlement, fraud] = await Promise.all([mockSettlement(), mockFraud()]);
+
+        // Override settlement with real OCR data if we extracted it
+        if (ocrInvoiceData) {
+            settlement.garageName = ocrInvoiceData.garage;
+            settlement.invoiceAmount = ocrInvoiceData.amount;
+            settlement.amount = ocrInvoiceData.amount;
+            settlement.invoiceDate = ocrInvoiceData.date;
+        }
+
         addMessage({
             role: 'ai',
             content: 'J\'ai analysé vos documents. Voici le résumé de votre déclaration:',

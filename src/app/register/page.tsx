@@ -5,16 +5,27 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
     Shield, ArrowRight, ArrowLeft, Upload, CheckCircle, User, CreditCard,
-    Phone, Mail, MapPin, Calendar, AlertCircle, Loader2, Lock
+    Phone, Mail, MapPin, Calendar, AlertCircle, Loader2, Lock, XCircle
 } from 'lucide-react';
-import { mockOCR } from '@/lib/mockServices';
+import { uploadDocument, compareSelfieToID, sendKYCConfirmationEmail, type IdentityCardData } from '@/services/ocrService';
+import { Camera, Image as ImageIcon } from 'lucide-react';
 
-type Step = 1 | 2 | 3;
+type Step = 1 | 2 | 3 | 4;
+
+const STEPS = [
+    { num: 1, label: 'Scan ID', labelAr: 'مسح الهوية' },
+    { num: 2, label: 'Selfie Match', labelAr: 'صورة شخصية' },
+    { num: 3, label: 'Review & Create', labelAr: 'مراجعة وحساب' },
+];
 
 interface FormData {
-    fullName: string;
+    fullNameArabic: string;
+    fullNameLatin: string;
     cin: string;
     birthDate: string;
+    expiryDate: string;
+    birthPlace: string;
+    fatherName: string;
     phone: string;
     email: string;
     address: string;
@@ -22,19 +33,17 @@ interface FormData {
     confirmPassword?: string;
 }
 
-const STEPS = [
-    { num: 1, label: 'Scan ID', labelAr: 'مسح الهوية' },
-    { num: 2, label: 'Review Information', labelAr: 'مراجعة المعلومات' },
-    { num: 3, label: 'Create Account', labelAr: 'إنشاء الحساب' },
-];
-
 export default function RegisterPage() {
     const router = useRouter();
     const [step, setStep] = useState<Step>(1);
     const [form, setForm] = useState<FormData>({
-        fullName: '',
+        fullNameArabic: '',
+        fullNameLatin: '',
         cin: '',
         birthDate: '',
+        expiryDate: '',
+        birthPlace: '',
+        fatherName: '',
         phone: '',
         email: '',
         address: '',
@@ -44,11 +53,29 @@ export default function RegisterPage() {
     const [errors, setErrors] = useState<Partial<FormData>>({});
 
     // OCR / File Upload States
-    const [idFile, setIdFile] = useState<File | null>(null);
+    const [frontIdFile, setFrontIdFile] = useState<File | null>(null);
+    const [backIdFile, setBackIdFile] = useState<File | null>(null);
     const [isDragActive, setIsDragActive] = useState(false);
     const [ocrLoading, setOcrLoading] = useState(false);
-    const [ocrLoadingStep, setOcrLoadingStep] = useState<1 | 2>(1);
-    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [ocrLoadingStep, setOcrLoadingStep] = useState<1 | 2 | 3>(1);
+    const [ocrError, setOcrError] = useState<string | null>(null);
+    const [ocrConfidence, setOcrConfidence] = useState<number>(0);
+    const [uploadSide, setUploadSide] = useState<'front' | 'back'>('front');
+    const frontFileInputRef = useRef<HTMLInputElement>(null);
+    const backFileInputRef = useRef<HTMLInputElement>(null);
+
+    // Selfie States
+    const [selfieFile, setSelfieFile] = useState<File | null>(null);
+    const [selfieLoading, setSelfieLoading] = useState(false);
+    const [selfieError, setSelfieError] = useState<string | null>(null);
+    const [faceMatchResult, setFaceMatchResult] = useState<{
+        matched: boolean;
+        confidence: number;
+        liveness: number;
+        error: string | null;
+    } | null>(null);
+    const selfieFileInputRef = useRef<HTMLInputElement>(null);
+    const [emailLoading, setEmailLoading] = useState(false);
 
     const handleDrag = (e: React.DragEvent) => {
         e.preventDefault();
@@ -60,58 +87,118 @@ export default function RegisterPage() {
         }
     };
 
-    const handleDrop = (e: React.DragEvent) => {
+    const handleDrop = (e: React.DragEvent, side: 'front' | 'back') => {
         e.preventDefault();
         e.stopPropagation();
         setIsDragActive(false);
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-            processUploadedId(e.dataTransfer.files[0]);
+            if (side === 'front') {
+                setFrontIdFile(e.dataTransfer.files[0]);
+                if (!backIdFile) {
+                    setUploadSide('back');
+                }
+            } else {
+                setBackIdFile(e.dataTransfer.files[0]);
+            }
         }
     };
 
-    const handleFileBrowse = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileBrowse = (e: React.ChangeEvent<HTMLInputElement>, side: 'front' | 'back') => {
         if (e.target.files && e.target.files[0]) {
-            processUploadedId(e.target.files[0]);
+            if (side === 'front') {
+                setFrontIdFile(e.target.files[0]);
+                if (!backIdFile) {
+                    setUploadSide('back');
+                }
+            } else {
+                setBackIdFile(e.target.files[0]);
+            }
         }
     };
 
-    const processUploadedId = async (file: File) => {
-        setIdFile(file);
+    const processOCR = async () => {
+        if (!frontIdFile) return;
         setOcrLoading(true);
         setOcrLoadingStep(1);
+        setOcrError(null);
 
-        // Transition loading step texts
-        const timer1 = setTimeout(() => {
-            setOcrLoadingStep(2);
-        }, 1200);
+        // Transition loading step texts progressively
+        const timer1 = setTimeout(() => setOcrLoadingStep(2), 1500);
+        const timer2 = setTimeout(() => setOcrLoadingStep(3), 4000);
 
         try {
-            // Wait total 2.5s to simulate scan & extract
-            await new Promise((resolve) => setTimeout(resolve, 2500));
-            const ocrResult = await mockOCR();
-            
+            // Call real OCR service with the front ID image
+            const frontResult = await uploadDocument(frontIdFile);
+
+            // Also process back ID if available, for supplementary data
+            let backResult = null;
+            if (backIdFile) {
+                try {
+                    backResult = await uploadDocument(backIdFile);
+                } catch {
+                    // Back ID OCR failure is non-critical, we continue with front data
+                }
+            }
+
+            // Extract identity data from front result
+            const extracted = frontResult.extractedData as IdentityCardData;
+
+            // Merge back result if it contains additional fields
+            let mergedData = { ...extracted };
+            if (backResult && backResult.documentType === 'identity_card') {
+                const backData = backResult.extractedData as IdentityCardData;
+                // Fill in any missing fields from back scan
+                if (!mergedData.fullNameArabic && backData.fullNameArabic) mergedData.fullNameArabic = backData.fullNameArabic;
+                if (!mergedData.fullNameLatin && backData.fullNameLatin) mergedData.fullNameLatin = backData.fullNameLatin;
+                if (!mergedData.cin && backData.cin) mergedData.cin = backData.cin;
+                if (!mergedData.birthDate && backData.birthDate) mergedData.birthDate = backData.birthDate;
+                if (!mergedData.expiryDate && backData.expiryDate) mergedData.expiryDate = backData.expiryDate;
+                if (!mergedData.birthPlace && backData.birthPlace) mergedData.birthPlace = backData.birthPlace;
+                if (!mergedData.fatherName && backData.fatherName) mergedData.fatherName = backData.fatherName;
+            }
+
+            setOcrConfidence(Math.round(frontResult.confidence));
+
             setForm((prev) => ({
                 ...prev,
-                fullName: ocrResult.name,
-                cin: ocrResult.cin,
-                birthDate: ocrResult.birthDate,
-                address: '123 Rue Mohammed V, Casablanca', // Simulated extracted address
+                fullNameArabic: mergedData.fullNameArabic || '',
+                fullNameLatin: mergedData.fullNameLatin || '',
+                cin: mergedData.cin || '',
+                birthDate: mergedData.birthDate || '',
+                expiryDate: mergedData.expiryDate || '',
+                birthPlace: mergedData.birthPlace || '',
+                fatherName: mergedData.fatherName || '',
             }));
-            
+
+            clearTimeout(timer1);
+            clearTimeout(timer2);
             setOcrLoading(false);
             setStep(2);
-        } catch (err) {
+        } catch (err: unknown) {
+            clearTimeout(timer1);
+            clearTimeout(timer2);
             setOcrLoading(false);
-            alert("Erreur lors de la lecture de la carte d'identité. Veuillez réessayer.");
+            const errorMessage = err instanceof Error ? err.message : "Erreur lors de la lecture de la carte d'identité.";
+            setOcrError(errorMessage);
         }
     };
 
     const handleScanAgain = () => {
-        setIdFile(null);
+        setFrontIdFile(null);
+        setBackIdFile(null);
+        setUploadSide('front');
+        setOcrError(null);
+        setSelfieFile(null);
+        setFaceMatchResult(null);
+        setSelfieError(null);
         setForm({
-            fullName: '',
+            fullNameArabic: '',
+            fullNameLatin: '',
             cin: '',
             birthDate: '',
+            expiryDate: '',
+            birthPlace: '',
+            fatherName: '',
             phone: '',
             email: '',
             address: '',
@@ -122,12 +209,31 @@ export default function RegisterPage() {
         setStep(1);
     };
 
-    const validateStep2 = () => {
+    const handleFaceMatch = async () => {
+        if (!selfieFile || !frontIdFile) return;
+        setSelfieLoading(true);
+        setSelfieError(null);
+        setFaceMatchResult(null);
+
+        try {
+            const res = await compareSelfieToID(selfieFile, frontIdFile);
+            setFaceMatchResult(res);
+            if (res.error) {
+                setSelfieError(res.error);
+            }
+        } catch (err: unknown) {
+            const msg = err instanceof Error ? err.message : "Face matching failed";
+            setSelfieError(msg);
+        } finally {
+            setSelfieLoading(false);
+        }
+    };
+
+    const validateStep3 = () => {
         const e: Partial<FormData> = {};
-        if (!form.fullName.trim()) e.fullName = 'Nom complet requis';
+        if (!form.fullNameLatin.trim() && !form.fullNameArabic.trim()) e.fullNameLatin = 'Nom complet requis';
         if (!form.cin.trim()) e.cin = 'CIN requis';
         if (!form.birthDate) e.birthDate = 'Date de naissance requise';
-        if (!form.address.trim()) e.address = 'Adresse requise';
         
         if (!form.email.trim()) {
             e.email = 'Email requis';
@@ -153,9 +259,27 @@ export default function RegisterPage() {
         return Object.keys(e).length === 0;
     };
 
-    const handleStep2Submit = () => {
-        if (validateStep2()) {
-            setStep(3);
+    const handleStep3Submit = async () => {
+        if (validateStep3()) {
+            setEmailLoading(true);
+            try {
+                // Trigger backend SMTP email dispatch
+                await sendKYCConfirmationEmail(form.email, {
+                    fullNameArabic: form.fullNameArabic,
+                    fullNameLatin: form.fullNameLatin,
+                    cin: form.cin,
+                    birthDate: form.birthDate,
+                    birthPlace: form.birthPlace,
+                    fatherName: form.fatherName,
+                    phone: form.phone,
+                    address: form.address,
+                });
+            } catch (err) {
+                console.error("Failed to send confirmation email", err);
+            } finally {
+                setEmailLoading(false);
+                setStep(4);
+            }
         }
     };
 
@@ -204,57 +328,126 @@ export default function RegisterPage() {
                     ))}
                 </div>
 
-                {/* Step 1: Scan ID */}
+                {/* Step 1: Upload ID Card(s) */}
                 {step === 1 && !ocrLoading && (
                     <div className="card-base p-8 fade-in-up">
                         <h2 className="font-display font-bold text-2xl text-foreground mb-2">Vérification de votre identité</h2>
                         <p className="text-muted-foreground text-sm mb-8">Veuillez scanner ou télécharger votre carte d&apos;identité nationale pour lancer la vérification d&apos;identité assistée par IA.</p>
 
-                        <div
-                            onDragEnter={handleDrag}
-                            onDragOver={handleDrag}
-                            onDragLeave={handleDrag}
-                            onDrop={handleDrop}
-                            className={`w-full min-h-[260px] rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-4 transition-all duration-250 p-6 text-center group cursor-pointer ${
-                                isDragActive
-                                    ? 'border-primary bg-primary/5 scale-[1.01]'
-                                    : 'border-border hover:border-primary/50 hover:bg-muted/30'
-                            }`}
-                            onClick={() => fileInputRef.current?.click()}
-                        >
-                            <div className="w-16 h-16 rounded-2xl bg-accent flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-250 shadow-sm">
-                                <Upload size={28} />
+                        {/* OCR Error Banner */}
+                        {ocrError && (
+                            <div className="bg-sanad-danger/10 border border-sanad-danger/20 rounded-2xl p-4 mb-6 flex items-start gap-3 fade-in-up">
+                                <XCircle size={20} className="text-sanad-danger flex-shrink-0 mt-0.5" />
+                                <div>
+                                    <p className="text-sm font-semibold text-foreground">Erreur OCR</p>
+                                    <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{ocrError}</p>
+                                </div>
+                                <button onClick={() => setOcrError(null)} className="ml-auto text-muted-foreground hover:text-foreground">
+                                    <XCircle size={16} />
+                                </button>
                             </div>
+                        )}
+
+                        <div className="space-y-4">
+                            {/* Front ID Upload */}
                             <div>
-                                <p className="text-base font-semibold text-foreground">
-                                    Glissez-déposez votre carte d&apos;identité ici
+                                <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase mb-2">
+                                    Recto de la carte d&apos;identité (Obligatoire)
                                 </p>
-                                <p className="text-sm text-muted-foreground mt-1">
-                                    ou sélectionnez un fichier sur votre appareil
-                                </p>
-                                <p className="text-xs text-muted-foreground mt-3">
-                                    Formats acceptés : JPG, PNG ou PDF (Max. 10 Mo)
-                                </p>
+                                <div
+                                    onDragEnter={handleDrag}
+                                    onDragOver={handleDrag}
+                                    onDragLeave={handleDrag}
+                                    onDrop={(e) => handleDrop(e, 'front')}
+                                    className={`w-full min-h-[180px] rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-3 transition-all duration-250 p-6 text-center group cursor-pointer ${
+                                        frontIdFile
+                                            ? 'border-sanad-success bg-sanad-success/5'
+                                            : isDragActive && uploadSide === 'front'
+                                            ? 'border-primary bg-primary/5 scale-[1.01]'
+                                            : 'border-border hover:border-primary/50 hover:bg-muted/30'
+                                    }`}
+                                    onClick={() => frontFileInputRef.current?.click()}
+                                >
+                                    {frontIdFile ? (
+                                        <>
+                                            <CheckCircle size={28} className="text-sanad-success" />
+                                            <p className="text-sm font-medium text-foreground">{frontIdFile.name}</p>
+                                            <p className="text-xs text-sanad-success">Fichier sélectionné ✓</p>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className="w-12 h-12 rounded-xl bg-accent flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-250 shadow-sm">
+                                                <Upload size={22} />
+                                            </div>
+                                            <p className="text-sm font-semibold text-foreground">Recto — Glissez ou cliquez pour importer</p>
+                                            <p className="text-xs text-muted-foreground">JPG, PNG ou PDF (Max. 10 Mo)</p>
+                                        </>
+                                    )}
+                                    <input
+                                        ref={frontFileInputRef}
+                                        type="file"
+                                        accept="image/*,.pdf"
+                                        className="hidden"
+                                        onChange={(e) => handleFileBrowse(e, 'front')}
+                                    />
+                                </div>
                             </div>
-                            <button
-                                type="button"
-                                className="btn-primary gap-2 mt-2 px-5 py-2.5"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    fileInputRef.current?.click();
-                                }}
-                            >
-                                <Upload size={16} />
-                                Scanner / Importer la carte d&apos;identité
-                            </button>
-                            <input
-                                ref={fileInputRef}
-                                type="file"
-                                accept="image/*,.pdf"
-                                className="hidden"
-                                onChange={handleFileBrowse}
-                            />
+
+                            {/* Back ID Upload */}
+                            <div>
+                                <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase mb-2">
+                                    Verso de la carte d&apos;identité (Optionnel)
+                                </p>
+                                <div
+                                    onDragEnter={handleDrag}
+                                    onDragOver={handleDrag}
+                                    onDragLeave={handleDrag}
+                                    onDrop={(e) => handleDrop(e, 'back')}
+                                    className={`w-full min-h-[140px] rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-3 transition-all duration-250 p-6 text-center group cursor-pointer ${
+                                        backIdFile
+                                            ? 'border-sanad-success bg-sanad-success/5'
+                                            : isDragActive && uploadSide === 'back'
+                                            ? 'border-primary bg-primary/5 scale-[1.01]'
+                                            : 'border-border hover:border-primary/50 hover:bg-muted/30'
+                                    }`}
+                                    onClick={() => backFileInputRef.current?.click()}
+                                >
+                                    {backIdFile ? (
+                                        <>
+                                            <CheckCircle size={24} className="text-sanad-success" />
+                                            <p className="text-sm font-medium text-foreground">{backIdFile.name}</p>
+                                            <p className="text-xs text-sanad-success">Fichier sélectionné ✓</p>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-250 shadow-sm">
+                                                <Upload size={18} />
+                                            </div>
+                                            <p className="text-sm font-semibold text-foreground">Verso — Glissez ou cliquez pour importer</p>
+                                            <p className="text-xs text-muted-foreground">JPG, PNG ou PDF (Max. 10 Mo)</p>
+                                        </>
+                                    )}
+                                    <input
+                                        ref={backFileInputRef}
+                                        type="file"
+                                        accept="image/*,.pdf"
+                                        className="hidden"
+                                        onChange={(e) => handleFileBrowse(e, 'back')}
+                                    />
+                                </div>
+                            </div>
                         </div>
+
+                        {/* Launch OCR Button */}
+                        <button
+                            type="button"
+                            disabled={!frontIdFile}
+                            onClick={processOCR}
+                            className="btn-primary gap-2 mt-6 px-5 py-2.5 w-full justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <CreditCard size={16} />
+                            Lancer la vérification OCR
+                        </button>
                     </div>
                 )}
 
@@ -269,7 +462,7 @@ export default function RegisterPage() {
                         </div>
                         
                         <h3 className="font-display font-bold text-xl text-foreground mb-6">
-                            Traitement de votre identité
+                            Lecture de votre carte d&apos;identité...
                         </h3>
                         
                         <div className="space-y-4 w-full max-w-xs mx-auto">
@@ -281,6 +474,13 @@ export default function RegisterPage() {
                             {ocrLoadingStep >= 2 && (
                                 <div className="flex items-center gap-3 text-sm text-foreground font-medium justify-center fade-in-up">
                                     <Loader2 size={16} className="animate-spin text-primary" />
+                                    <span>Reading your identity document...</span>
+                                </div>
+                            )}
+
+                            {ocrLoadingStep >= 3 && (
+                                <div className="flex items-center gap-3 text-sm text-foreground font-medium justify-center fade-in-up">
+                                    <Loader2 size={16} className="animate-spin text-primary" />
                                     <span>Extracting personal information...</span>
                                 </div>
                             )}
@@ -288,27 +488,161 @@ export default function RegisterPage() {
                     </div>
                 )}
 
-                {/* Step 2: Review Information */}
+                {/* Step 2: Selfie & Biometric Match */}
                 {step === 2 && (
+                    <div className="card-base p-8 fade-in-up">
+                        <h2 className="font-display font-bold text-2xl text-foreground mb-2">Vérification Biométrique</h2>
+                        <p className="text-muted-foreground text-sm mb-8">Veuillez importer ou prendre un selfie pour comparer votre visage avec la photo de votre carte d&apos;identité nationale.</p>
+
+                        {selfieError && (
+                            <div className="bg-sanad-danger/10 border border-sanad-danger/20 rounded-2xl p-4 mb-6 flex items-start gap-3 fade-in-up">
+                                <XCircle size={20} className="text-sanad-danger flex-shrink-0 mt-0.5" />
+                                <div>
+                                    <p className="text-sm font-semibold text-foreground">Erreur Biométrique</p>
+                                    <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{selfieError}</p>
+                                </div>
+                                <button onClick={() => setSelfieError(null)} className="ml-auto text-muted-foreground hover:text-foreground">
+                                    <XCircle size={16} />
+                                </button>
+                            </div>
+                        )}
+
+                        <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-border rounded-3xl bg-muted/10 hover:bg-muted/20 transition-all duration-200 mb-8">
+                            {selfieFile ? (
+                                <div className="text-center space-y-4">
+                                    <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-primary/20 mx-auto shadow-md">
+                                        <img
+                                            src={URL.createObjectURL(selfieFile)}
+                                            alt="Selfie"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-medium text-foreground">{selfieFile.name}</p>
+                                        <button
+                                            type="button"
+                                            onClick={() => { setSelfieFile(null); setFaceMatchResult(null); }}
+                                            className="text-xs text-sanad-danger font-medium hover:underline mt-1"
+                                        >
+                                            Changer de photo
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div
+                                    className="text-center cursor-pointer py-6 w-full"
+                                    onClick={() => selfieFileInputRef.current?.click()}
+                                >
+                                    <div className="w-12 h-12 rounded-2xl bg-accent text-primary flex items-center justify-center mx-auto mb-4 shadow-sm">
+                                        <Camera size={22} />
+                                    </div>
+                                    <p className="text-sm font-semibold text-foreground">Prendre ou importer un Selfie</p>
+                                    <p className="text-xs text-muted-foreground mt-1">Format portrait requis (JPG, PNG)</p>
+                                    <input
+                                        ref={selfieFileInputRef}
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={(e) => {
+                                            if (e.target.files?.[0]) {
+                                                setSelfieFile(e.target.files[0]);
+                                                setSelfieError(null);
+                                            }
+                                        }}
+                                    />
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Selfie Loading State */}
+                        {selfieLoading && (
+                            <div className="bg-muted/30 rounded-2xl p-5 mb-8 text-center space-y-3">
+                                <Loader2 className="animate-spin text-primary mx-auto" size={24} />
+                                <p className="text-sm font-medium text-foreground">Analyse et comparaison faciale en cours...</p>
+                                <p className="text-xs text-muted-foreground">Extraction des caractéristiques géométriques du visage...</p>
+                            </div>
+                        )}
+
+                        {/* Comparison Results */}
+                        {faceMatchResult && !selfieLoading && (
+                            <div className={`rounded-2xl p-6 mb-8 border ${
+                                faceMatchResult.matched
+                                    ? 'bg-sanad-success/10 border-sanad-success/20'
+                                    : 'bg-sanad-danger/10 border-sanad-danger/20'
+                            } fade-in-up`}>
+                                <div className="flex items-start gap-4">
+                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                                        faceMatchResult.matched ? 'bg-sanad-success/20 text-sanad-success' : 'bg-sanad-danger/20 text-sanad-danger'
+                                    }`}>
+                                        {faceMatchResult.matched ? <CheckCircle size={20} /> : <XCircle size={20} />}
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className="font-semibold text-sm text-foreground">
+                                            {faceMatchResult.matched ? 'Reconnaissance Faciale Réussie' : 'Échec de Reconnaissance'}
+                                        </h4>
+                                        <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                                            {faceMatchResult.matched
+                                                ? 'Le selfie correspond à la photo d’identité nationale détectée sur la carte.'
+                                                : 'Le visage détecté sur le selfie ne correspond pas à celui de la carte d’identité.'}
+                                        </p>
+                                        
+                                        <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-border/40">
+                                            <div>
+                                                <span className="text-xs text-muted-foreground block">Score de Match</span>
+                                                <span className="text-lg font-bold text-foreground">{faceMatchResult.confidence}%</span>
+                                            </div>
+                                            <div>
+                                                <span className="text-xs text-muted-foreground block">Vérification Liveness (Vivacité)</span>
+                                                <span className="text-lg font-bold text-foreground">{faceMatchResult.liveness}%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="flex justify-between items-center mt-8 gap-4">
+                            <button
+                                type="button"
+                                onClick={() => setStep(1)}
+                                className="btn-secondary gap-2 px-5 py-2.5"
+                            >
+                                <ArrowLeft size={16} />
+                                Retour
+                            </button>
+                            
+                            {!faceMatchResult?.matched ? (
+                                <button
+                                    type="button"
+                                    disabled={!selfieFile || selfieLoading}
+                                    onClick={handleFaceMatch}
+                                    className="btn-primary gap-2 px-6 py-2.5 ml-auto disabled:opacity-50"
+                                >
+                                    Vérifier mon visage
+                                    <Camera size={16} />
+                                </button>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={() => setStep(3)}
+                                    className="btn-primary gap-2 px-6 py-2.5 ml-auto"
+                                >
+                                    Suivant
+                                    <ArrowRight size={16} />
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {/* Step 3: Review Information & Account Credentials */}
+                {step === 3 && (
                     <div className="card-base p-8 fade-in-up">
                         <h2 className="font-display font-bold text-2xl text-foreground mb-2">Vérifier vos informations</h2>
                         <p className="text-muted-foreground text-sm mb-6">Veuillez vérifier les informations extraites de votre carte d&apos;identité nationale.</p>
 
-                        {/* Success Verification Banner */}
-                        <div className="bg-sanad-success/10 border border-sanad-success/20 rounded-2xl p-4 mb-6 flex items-start gap-3 fade-in-up">
-                            <CheckCircle size={20} className="text-sanad-success flex-shrink-0 mt-0.5" />
-                            <div>
-                                <p className="text-sm font-semibold text-foreground">
-                                    Vérification réussie
-                                </p>
-                                <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
-                                    Your identity has been successfully verified. Please review your information before continuing.
-                                </p>
-                            </div>
-                        </div>
-
                         <div className="space-y-6">
-                            {/* Group 1: Extracted and Editable */}
+                            {/* Group 1: OCR Extracted Fields (Editable) */}
                             <div>
                                 <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase mb-3">
                                     Informations extraites de la carte d&apos;identité (Modifiables)
@@ -316,15 +650,27 @@ export default function RegisterPage() {
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-xs font-medium text-foreground mb-1.5">
-                                            Nom complet
+                                            الإسم بالعربية (Arabic Name)
                                         </label>
                                         <input
                                             type="text"
-                                            className={`input-base ${errors.fullName ? 'border-sanad-danger ring-1 ring-sanad-danger' : ''}`}
-                                            value={form.fullName}
-                                            onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+                                            dir="rtl"
+                                            className="input-base"
+                                            value={form.fullNameArabic}
+                                            onChange={(e) => setForm({ ...form, fullNameArabic: e.target.value })}
                                         />
-                                        {errors.fullName && <p className="text-xs text-sanad-danger mt-1">{errors.fullName}</p>}
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-medium text-foreground mb-1.5">
+                                            Nom complet (Latin)
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className={`input-base ${errors.fullNameLatin ? 'border-sanad-danger ring-1 ring-sanad-danger' : ''}`}
+                                            value={form.fullNameLatin}
+                                            onChange={(e) => setForm({ ...form, fullNameLatin: e.target.value })}
+                                        />
+                                        {errors.fullNameLatin && <p className="text-xs text-sanad-danger mt-1">{errors.fullNameLatin}</p>}
                                     </div>
                                     <div>
                                         <label className="block text-xs font-medium text-foreground mb-1.5">
@@ -352,7 +698,42 @@ export default function RegisterPage() {
                                     </div>
                                     <div>
                                         <label className="block text-xs font-medium text-foreground mb-1.5">
-                                            Adresse
+                                            Lieu de naissance
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className={`input-base ${errors.birthPlace ? 'border-sanad-danger ring-1 ring-sanad-danger' : ''}`}
+                                            value={form.birthPlace}
+                                            onChange={(e) => setForm({ ...form, birthPlace: e.target.value })}
+                                        />
+                                        {errors.birthPlace && <p className="text-xs text-sanad-danger mt-1">{errors.birthPlace}</p>}
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-medium text-foreground mb-1.5">
+                                            Nom du père
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className={`input-base ${errors.fatherName ? 'border-sanad-danger ring-1 ring-sanad-danger' : ''}`}
+                                            value={form.fatherName}
+                                            onChange={(e) => setForm({ ...form, fatherName: e.target.value })}
+                                        />
+                                        {errors.fatherName && <p className="text-xs text-sanad-danger mt-1">{errors.fatherName}</p>}
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-medium text-foreground mb-1.5">
+                                            Date d&apos;expiration
+                                        </label>
+                                        <input
+                                            type="date"
+                                            className="input-base"
+                                            value={form.expiryDate}
+                                            onChange={(e) => setForm({ ...form, expiryDate: e.target.value })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-medium text-foreground mb-1.5">
+                                            Adresse (Résidence)
                                         </label>
                                         <input
                                             type="text"
@@ -392,7 +773,7 @@ export default function RegisterPage() {
                                         </label>
                                         <input
                                             type="tel"
-                                            placeholder="+212 6 XX XX XX XX"
+                                            placeholder="+216 XX XXX XXX"
                                             className={`input-base ${errors.phone ? 'border-sanad-danger ring-1 ring-sanad-danger' : ''}`}
                                             value={form.phone}
                                             onChange={(e) => setForm({ ...form, phone: e.target.value })}
@@ -435,42 +816,70 @@ export default function RegisterPage() {
                         <div className="flex justify-between items-center mt-8 gap-4">
                             <button
                                 type="button"
-                                onClick={handleScanAgain}
+                                onClick={() => setStep(2)}
                                 className="btn-secondary gap-2 px-5 py-2.5"
+                                disabled={emailLoading}
                             >
                                 <ArrowLeft size={16} />
-                                Scan Again / Réimporter
+                                Retour
                             </button>
                             <button
                                 type="button"
-                                onClick={handleStep2Submit}
-                                className="btn-primary gap-2 px-6 py-2.5 ml-auto"
+                                onClick={handleStep3Submit}
+                                className="btn-primary gap-2 px-6 py-2.5 ml-auto disabled:opacity-75 flex items-center"
+                                disabled={emailLoading}
                             >
-                                Créer mon compte
-                                <ArrowRight size={16} />
+                                {emailLoading ? (
+                                    <>
+                                        <Loader2 size={16} className="animate-spin mr-1.5" />
+                                        Finalisation...
+                                    </>
+                                ) : (
+                                    <>
+                                        Créer mon compte
+                                        <ArrowRight size={16} />
+                                    </>
+                                )}
                             </button>
                         </div>
                     </div>
                 )}
 
-                {/* Step 3: Create Account Confirmation */}
-                {step === 3 && (
+                {/* Step 4: Create Account Confirmation */}
+                {step === 4 && (
                     <div className="card-base p-8 text-center fade-in-up">
                         <div className="w-16 h-16 rounded-full bg-sanad-success/15 text-sanad-success flex items-center justify-center mx-auto mb-6 shadow-sm">
                             <CheckCircle size={36} />
                         </div>
                         
                         <h2 className="font-display font-bold text-2xl text-foreground mb-2">Compte créé avec succès !</h2>
-                        <p className="text-muted-foreground text-sm mb-6">Bienvenue chez SANAD. Votre profil a été configuré avec vos informations vérifiées.</p>
+                        <p className="text-muted-foreground text-sm mb-4">Bienvenue chez SANAD. Votre profil a été configuré avec vos informations vérifiées.</p>
+                        <p className="text-xs text-sanad-success font-medium bg-sanad-success/10 border border-sanad-success/20 rounded-full px-3 py-1.5 max-w-sm mx-auto mb-6">
+                            Un e-mail récapitulatif contenant toutes vos informations KYC a été envoyé.
+                        </p>
 
                         <div className="bg-muted rounded-2xl p-5 mb-8 text-left max-w-md mx-auto space-y-3">
+                            {form.fullNameArabic && (
+                                <div className="flex justify-between text-sm py-1 border-b border-border">
+                                    <span className="text-muted-foreground">الإسم</span>
+                                    <span className="font-semibold text-foreground" dir="rtl">{form.fullNameArabic}</span>
+                                </div>
+                            )}
                             <div className="flex justify-between text-sm py-1 border-b border-border">
                                 <span className="text-muted-foreground">Assuré</span>
-                                <span className="font-semibold text-foreground">{form.fullName}</span>
+                                <span className="font-semibold text-foreground">{form.fullNameLatin}</span>
                             </div>
                             <div className="flex justify-between text-sm py-1 border-b border-border">
                                 <span className="text-muted-foreground">Numéro CIN</span>
                                 <span className="font-semibold text-foreground font-mono">{form.cin}</span>
+                            </div>
+                            <div className="flex justify-between text-sm py-1 border-b border-border">
+                                <span className="text-muted-foreground">Lieu de naissance</span>
+                                <span className="font-semibold text-foreground">{form.birthPlace}</span>
+                            </div>
+                            <div className="flex justify-between text-sm py-1 border-b border-border">
+                                <span className="text-muted-foreground">Nom du père</span>
+                                <span className="font-semibold text-foreground">{form.fatherName}</span>
                             </div>
                             <div className="flex justify-between text-sm py-1 border-b border-border">
                                 <span className="text-muted-foreground">Email</span>
