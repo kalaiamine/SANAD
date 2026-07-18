@@ -17,9 +17,10 @@ const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const DEFAULT_MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-120b';
 
 // Vision JSON responses are small, but reasoning models (e.g. Qwen) spend
-// completion tokens on <think> blocks before the JSON — a 512 budget gets
-// truncated mid-reasoning and no JSON is ever emitted.
-const DEFAULT_VISION_MAX_TOKENS = 2048;
+// completion tokens on <think> blocks before the JSON — a small budget gets
+// truncated mid-reasoning and no JSON is ever emitted. Confusing inputs
+// (gibberish brand names, ambiguous photos) make the reasoning even longer.
+const DEFAULT_VISION_MAX_TOKENS = 4096;
 
 export interface GroqMessage {
     role: 'system' | 'user' | 'assistant';
@@ -220,20 +221,18 @@ export async function groqVisionChat(
         },
     ] as const;
 
-    const requestBody = (jsonMode: boolean, reasoningFormat: 'hidden' | 'parsed') => ({
+    const requestBody = (jsonMode: boolean, reasoningFormat: 'hidden' | 'parsed' | null) => ({
         model: DEFAULT_VISION_MODEL,
         messages,
         temperature: opts.temperature ?? 0.15,
         max_completion_tokens: opts.maxTokens ?? DEFAULT_VISION_MAX_TOKENS,
-        ...(jsonMode
-            ? {
-                  response_format: { type: 'json_object' },
-                  reasoning_format: reasoningFormat,
-              }
-            : {}),
+        // Reasoning models (Qwen) emit <think> blocks that consume the whole
+        // completion budget and break JSON parsing — ask Groq to hide them.
+        ...(reasoningFormat ? { reasoning_format: reasoningFormat } : {}),
+        ...(jsonMode ? { response_format: { type: 'json_object' } } : {}),
     });
 
-    const call = async (jsonMode: boolean, reasoningFormat: 'hidden' | 'parsed' = 'hidden') => {
+    const call = async (jsonMode: boolean, reasoningFormat: 'hidden' | 'parsed' | null = 'hidden') => {
         const res = await groqFetch(apiKey, requestBody(jsonMode, reasoningFormat));
 
         if (!res.ok) {
@@ -257,23 +256,28 @@ export async function groqVisionChat(
         return call(false);
     }
 
-    const jsonAttempts: Array<{ jsonMode: true; reasoningFormat: 'hidden' | 'parsed' } | { jsonMode: false }> = [
+    // Degrade gracefully: strict JSON + hidden reasoning → parsed reasoning →
+    // plain text with hidden reasoning → plain text without any extra params
+    // (in case the configured model rejects reasoning_format).
+    const jsonAttempts: Array<{ jsonMode: boolean; reasoningFormat: 'hidden' | 'parsed' | null }> = [
         { jsonMode: true, reasoningFormat: 'hidden' },
         { jsonMode: true, reasoningFormat: 'parsed' },
-        { jsonMode: false },
+        { jsonMode: false, reasoningFormat: 'hidden' },
+        { jsonMode: false, reasoningFormat: null },
     ];
 
     let lastError: unknown;
     for (const attempt of jsonAttempts) {
         try {
-            if (attempt.jsonMode) {
-                return await call(true, attempt.reasoningFormat);
-            }
-            return await call(false);
+            return await call(attempt.jsonMode, attempt.reasoningFormat);
         } catch (err) {
             lastError = err;
             const message = err instanceof Error ? err.message : '';
-            if (!isJsonValidationError(message)) {
+            const isRecoverable =
+                isJsonValidationError(message) ||
+                message.includes('reasoning_format') ||
+                message.includes('reasoning');
+            if (!isRecoverable) {
                 throw err;
             }
         }
