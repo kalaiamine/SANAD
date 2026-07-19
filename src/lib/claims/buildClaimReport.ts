@@ -4,6 +4,7 @@ import type { ConstatFraudResults } from '@/lib/constat/generateConstatPdf';
 import type { ConstatData } from '@/lib/constat/types';
 import type { EstimateSource, VehicleEstimateResult } from './estimateVehicleDamage';
 import { buildExplainabilityBundle, type ExplainabilityBundle } from '@/lib/ai/explainability';
+import { evaluateClaimDecision, type BusinessRuleDecision } from '@/lib/businessRule';
 
 export interface VehicleClaimSlice {
     label: 'A' | 'B';
@@ -30,6 +31,8 @@ export interface ClaimReportData {
     fraudB: FraudCheckResult | null;
     invoiceReference: number | null;
     explainability: ExplainabilityBundle;
+    /** Routage gated : l'IA ne décide seule que si montant, confiance et fraude sont au vert. */
+    decision: BusinessRuleDecision;
 }
 
 function vehicleFraudContribution(result: FraudCheckResult | null | undefined): number {
@@ -114,5 +117,6 @@ export function buildClaimReport(params: {
         fraudB: fraudResults.B ?? null,
         invoiceReference,
         explainability,
+        decision: evaluateClaimDecision(settlementMid, aiConfidence, fraudScore),
     };
 }

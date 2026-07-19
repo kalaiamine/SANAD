@@ -103,6 +103,29 @@ export default function ClaimAnalysisReport({ data }: { data: ClaimReportData })
                 <p className="text-[10px] text-muted-foreground mt-0.5">Généré le {data.generatedAt}</p>
             </div>
 
+            {/* Routage gated : l'IA ne décide seule que si tous les contrôles sont verts */}
+            {data.decision && (
+                <div
+                    className={`mx-4 mt-4 px-4 py-3 rounded-xl border flex items-start gap-3 ${
+                        data.decision.decision === 'auto_approve'
+                            ? 'bg-sanad-success/10 border-sanad-success/30'
+                            : 'bg-amber-50 border-amber-300'
+                    }`}
+                >
+                    <span className="text-lg leading-none mt-0.5">
+                        {data.decision.decision === 'auto_approve' ? '✅' : '👤'}
+                    </span>
+                    <div>
+                        <p className={`text-sm font-bold ${data.decision.decision === 'auto_approve' ? 'text-sanad-success' : 'text-amber-700'}`}>
+                            {data.decision.decision === 'auto_approve'
+                                ? 'Auto-approbation accordée'
+                                : 'Transmis à un expert humain'}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{data.decision.explanation}</p>
+                    </div>
+                </div>
+            )}
+
             <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Settlement recommendation */}
                 <div className="card-base p-5 flex flex-col">

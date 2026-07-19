@@ -1,0 +1,215 @@
+================================================================
+SANAD — DOSSIER DE PITCH v2 (hackathon "Automate or Die")
+Intègre : gate de confiance actif · identité réutilisable · derja ·
+MVP phasé · comparatif concurrentiel · impact justifié
+================================================================
+
+----------------------------------------------------------------
+A. DESCRIPTION DU PROJET (version jury, 3 paragraphes)
+----------------------------------------------------------------
+
+SANAD est une plateforme d'assurance tunisienne qui automatise les deux
+processus les plus coûteux du secteur : l'entrée en relation (KYC) et la
+déclaration de sinistre. Un assuré ouvre son compte en ~5 minutes depuis
+son téléphone (scan de la CIN en arabe, selfie avec anti-usurpation,
+filtrage sanctions/PPE conforme à la Loi 2015-26), puis déclare un
+accident en ~3 minutes en parlant à un assistant qui comprend le
+français, l'arabe standard ET la derja tunisienne — y compris en
+caractères latins (« sadamt fi 9alb el mdina »). Photos des dégâts,
+factures et rapports sont lus automatiquement ; le dossier ressort avec
+une fourchette d'indemnisation en dinars, un score de fraude et une
+explication de chaque facteur.
+
+Notre différence clé : chez SANAD, l'explicabilité n'est pas un
+affichage — c'est un ORGANE DE DÉCISION. Chaque dossier passe trois
+« gates » : montant (< 500 TND), confiance de l'IA (≥ 70 %) et score de
+fraude (< 30/100). L'IA n'a le droit d'auto-approuver que si les trois
+sont verts ; sinon le dossier est routé vers un expert humain avec les
+facteurs qui ont déclenché le renvoi. C'est l'automatisation SOUS
+CONTRÔLE : rapide quand elle est sûre, humaine quand elle doute — la
+condition réelle d'acceptabilité par un régulateur et par les assurés.
+
+Enfin, l'identité vérifiée est un ACTIF RÉUTILISABLE : chaque eKYC
+produit un dossier d'audit horodaté (OCR → AML → liveness → face-match)
+identifié par un dossierId unique, portable entre assureurs. Le client
+fait son KYC une seule fois ; un autre assureur membre peut s'appuyer
+sur le statut vérifié (hors données sensibles, qui restent chez
+l'émetteur) au lieu de refaire tout le processus. Un même CIN ne peut
+avoir qu'un seul dossier approuvé : l'usurpation d'identité est bloquée
+à la racine. C'est la brique d'un « KYC mutualisé » du marché tunisien,
+où chaque sinistre reste traçable jusqu'à l'identité vérifiée de son
+déclarant.
+
+----------------------------------------------------------------
+B. PLAN DE PITCH DECK — SLIDE PAR SLIDE (10 slides)
+----------------------------------------------------------------
+
+S1. TITRE + ACCROCHE
+    « L'assurance tunisienne : 5 minutes pour s'assurer,
+    3 minutes pour déclarer. » Logo, équipe, tagline.
+
+S2. LE PROBLÈME (avec chiffres)
+    - FNOL traditionnel : 15-20 min de saisie + jours de traitement,
+      heures ouvrables uniquement (mesure interne du parcours papier).
+    - KYC en agence : déplacement + documents papier, refait chez
+      CHAQUE assureur.
+    - Formulaires en français uniquement → exclusion d'une partie des
+      assurés (la derja est la langue vécue du client).
+    - Fraude : contrôle photo/déclaration quasi inexistant en pratique.
+
+S3. LA SOLUTION — 2 piliers, 1 parcours (schéma flow.png)
+    eKYC 5 min → identité vérifiée réutilisable → sinistre 3 min 24/7 →
+    décision gated (auto ou expert) expliquée.
+
+S4. DÉMO LIVE / VIDÉO (le cœur du pitch — 2 min)
+    Parcours unique : CIN → OCR → AML → selfie → compte →
+    déclaration en derja → photo dégâts → DÉCISION GATED À L'ÉCRAN
+    (bannière verte « auto-approuvé » ou orange « transmis à un
+    expert » avec la raison).
+
+S5. LE GATE DE CONFIANCE (notre différenciateur technique)
+    Schéma des 3 gates : montant / confiance IA ≥ 70 % / fraude < 30.
+    Message : « Nous n'avons pas construit une IA qui décide.
+    Nous avons construit une IA qui SAIT quand elle n'a pas le droit
+    de décider. »
+
+S6. IDENTITÉ RÉUTILISABLE (effet réseau)
+    1 CIN = 1 KYC approuvé, dossier d'audit portable entre assureurs.
+    Vision : utilité pour tout le marché tunisien, pas un outil interne.
+
+S7. COMPARATIF CONCURRENTIEL (tableau section D)
+    SANAD vs Tractable vs Shift Technology.
+
+S8. IMPACT CHIFFRÉ ET MÉTHODE (section E)
+    Chiffres mesurés sur le produit + hypothèses transparentes.
+
+S9. ROADMAP EN 3 PHASES (section F)
+    MVP hackathon (fait ✓) / Phase 2 (pilote) / Phase 3 (marché).
+
+S10. ÉQUIPE + DEMANDE
+    Ce qu'on cherche (pilote assureur, accès données anonymisées,
+    accompagnement réglementaire CGA/CTAF).
+
+----------------------------------------------------------------
+C. LE MÉCANISME DE CONFIANCE GATÉ (implémenté, démontrable)
+----------------------------------------------------------------
+
+Règle codée dans le produit (src/lib/businessRule.ts) et visible dans
+chaque rapport de sinistre :
+
+  GATE 1 — FRAUDE      : score ≥ 30/100  → expert humain, toujours.
+  GATE 2 — CONFIANCE   : confiance IA < 70 % → l'IA perd le droit de
+                          décider, quel que soit le montant.
+  GATE 3 — MONTANT     : ≥ 500 TND → validation humaine.
+  Les 3 verts          : auto-approbation immédiate, motivée.
+
+Chaque décision porte son explication (facteurs pondérés type SHAP) et
+le gate qui l'a produite est persisté en base → auditabilité complète
+des décisions automatiques (exigence régulateur).
+
+----------------------------------------------------------------
+D. COMPARATIF CONCURRENTIEL
+----------------------------------------------------------------
+
+| Critère                    | SANAD                          | Tractable                    | Shift Technology             |
+|----------------------------|--------------------------------|------------------------------|------------------------------|
+| Périmètre fonctionnel      | eKYC + sinistres UNIFIÉS       | Sinistres uniquement         | Fraude / décisions sinistres |
+|                            | (identité → indemnisation)     | (estimation dégâts photo)    | (pas d'eKYC grand public)    |
+| Résidence des données      | Identité traitée EN LOCAL      | SaaS cloud (UE/US/Asie)      | SaaS cloud (UE/US)           |
+| d'identité                 | (PaddleOCR/OpenCV on-premise,  | données envoyées au cloud    | données envoyées au cloud    |
+|                            | déployable chez l'assureur)    |                              |                              |
+| Langues du parcours client | Français + arabe + DERJA       | Langues marchés servis,      | Outil back-office,           |
+|                            | (script arabe et arabizi)      | pas de dialecte tunisien     | pas de parcours client       |
+| Conformité locale          | Loi 2015-26 native (AML/PPE,   | Générique                    | Générique                    |
+|                            | base légale tracée par dossier)|                              |                              |
+| Grille de coûts            | TND, marché tunisien           | Barèmes marchés matures      | N/A                          |
+| Human-in-the-loop          | Gate de confiance NATIF        | Selon intégration client     | Selon intégration client     |
+| Coût / accessibilité       | Stack légère sans GPU,         | Contrats enterprise          | Contrats enterprise          |
+|                            | adaptée aux assureurs tunisiens|                              |                              |
+
+Positionnement en une phrase : Tractable estime des dégâts, Shift
+détecte de la fraude — SANAD couvre le parcours COMPLET de l'assuré
+tunisien, dans sa langue, avec ses règles, sur son territoire.
+(Honnêteté jury : leurs modèles sont plus matures sur leur créneau ;
+notre avantage est le périmètre, la localisation et la souveraineté
+des données, pas la profondeur d'un modèle unique.)
+
+----------------------------------------------------------------
+E. IMPACT — CHIFFRES MESURÉS + MÉTHODOLOGIE (pas de chiffre brut)
+----------------------------------------------------------------
+
+MESURÉ SUR LE PRODUIT (démontrable en live) :
+  - FNOL : ~3 min de conversation contre 15-20 min de saisie
+    traditionnelle → -80 % de temps de déclaration (mesure interne).
+  - eKYC : ~5 min en ligne contre un déplacement en agence.
+  - OCR CIN : 82,6 % de confiance mesurée sur dossier réel.
+  - 46 tests automatisés verts (21 TS + 25 Py).
+
+ESTIMÉ PAR FORMULE TRANSPARENTE (hypothèses affichées) :
+  Coût de traitement d'un petit sinistre ≈ temps agent × coût horaire.
+  Hypothèses : 45 min de traitement manuel/dossier ; part des dossiers
+  < 500 TND à confiance élevée éligibles à l'auto-approbation : 40-60 %
+  (à calibrer sur données pilote — c'est précisément l'objet de la
+  Phase 2).
+  → Réduction attendue du coût de traitement des sinistres simples :
+  25-30 %. Cet ordre de grandeur est cohérent avec les études
+  sectorielles sur l'automatisation des sinistres (ex. McKinsey,
+  « Insurance 2030 — The impact of AI on the future of insurance »),
+  que nous citons comme référence de plausibilité, PAS comme preuve :
+  la preuve sera le pilote Phase 2 avec un assureur partenaire.
+
+Ce qu'on refuse de faire : annoncer « -X % » sans base. Ce qu'on
+propose : une formule + des hypothèses + un pilote pour les mesurer.
+
+----------------------------------------------------------------
+F. SCOPE MVP EN 3 PHASES
+----------------------------------------------------------------
+
+PHASE MVP — HACKATHON (FAIT ✓, démontrable en live)
+  Un parcours end-to-end unique :
+  upload CIN → OCR arabe + AML (Loi 2015-26) + selfie/liveness →
+  compte créé (< 5 min) → déclaration en derja → photo dégâts →
+  estimation TND → DÉCISION GATED en < 2 min (auto-approuvé ou flaggé
+  expert, avec explication).
+  Périmètre volontairement exclu du MVP : intégration aux SI
+  assureurs, paiement effectif, sinistres corporels complexes.
+
+PHASE 2 — PILOTE ASSUREUR (3-6 mois)
+  - Calibration des seuils (500 TND / 70 % / 30) sur données réelles
+    anonymisées du partenaire → mesure RÉELLE du % d'auto-approbation
+    et du coût évité (remplace les hypothèses de la section E).
+  - Branchement du dashboard expert sur les dossiers réels + file de
+    revue priorisée par risque.
+  - Listes sanctions/PPE officielles (ONU/CTAF) avec mise à jour
+    périodique ; durcissement sécurité (revalidation AML côté serveur).
+
+PHASE 3 — MARCHÉ (6-18 mois)
+  - Identité réutilisable inter-assureurs : consentement client,
+    partage du statut vérifié (pas des données sensibles), gouvernance
+    de place (type GIE) — le KYC mutualisé du marché tunisien.
+  - Extension aux sinistres habitation/santé simples.
+  - SHAP « vrai » calculé sur modèles ML entraînés sur les données du
+    pilote (remplace l'explicabilité à base de règles du MVP).
+
+----------------------------------------------------------------
+G. RÉPONSES AUX OBJECTIONS DU JURY (préparées)
+----------------------------------------------------------------
+
+« Trop ambitieux pour 24-48 h ? » → Le MVP est UN parcours, pas une
+plateforme. Tout ce qui est montré tourne (46 tests, repo public,
+docker compose). Le reste est explicitement en Phase 2/3.
+
+« Vos chiffres d'impact ? » → Distinction affichée entre MESURÉ
+(temps de parcours, confiance OCR) et ESTIMÉ (formule + hypothèses +
+pilote pour trancher). Aucun chiffre sans méthode.
+
+« Vs Tractable/Shift ? » → Eux : un maillon, en cloud, sans derja.
+Nous : le parcours complet, données d'identité locales, conformité
+2015-26 native. Marché cible différent (assureurs tunisiens/maghrébins
+que les pricing enterprise excluent).
+
+« Pourquoi vous faire confiance pour automatiser ? » → Justement :
+notre IA est bridée par construction. Elle ne décide seule que sous
+triple condition, et chaque décision automatique est auditable
+(gate + facteurs persistés en base).
+================================================================
