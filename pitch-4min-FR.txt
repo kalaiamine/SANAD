@@ -1,0 +1,278 @@
+================================================================
+SANAD — SCRIPT DE PITCH 4 MINUTES (Français)
+Structure : TEMPLATE OFFICIEL — 10 diapos Guy Kawasaki (Enactus)
++ diapo de conclusion orientée action, démo dans la diapo 4
+Format : 4 min de pitch + 4 min de Q&A · démo de 30 secondes max
+================================================================
+Conseils du workshop intégrés : hook narratif, pas de superlatifs,
+concurrence reconnue, risques adressés, chiffres mesurés vs estimés.
+
+----------------------------------------------------------------
+DIAPO 1 — TITRE  (0:00 – 0:10)
+----------------------------------------------------------------
+SUR LA DIAPO : logo SANAD · noms et rôles de l'équipe · email · téléphone.
+DIRE :
+« Bonjour. Nous sommes [noms], et voici SANAD — l'assurance pour
+la Tunisie : identité vérifiée en cinq minutes, sinistre déclaré
+en trois. »
+
+----------------------------------------------------------------
+DIAPO 2 — PROBLÈME / OPPORTUNITÉ  (0:10 – 0:40)
+----------------------------------------------------------------
+SUR LA DIAPO : photo du conducteur de Sfax + 3 icônes de douleur.
+DIRE :
+« Le mois dernier, un conducteur à Sfax a abîmé son pare-chocs.
+Il lui a fallu trois semaines et deux déplacements en agence pour
+obtenir une réponse. Son histoire, c'est le marché en miniature :
+le KYC est papier, refait chez chaque assureur ; déclarer un
+sinistre, c'est quinze à vingt minutes de formulaires puis des
+jours de traitement, aux heures ouvrables uniquement ; et les
+formulaires sont en français alors que la langue réelle du client,
+c'est la derja. Les assureurs perdent de l'argent sur chaque petit
+sinistre. Les clients honnêtes attendent. »
+
+----------------------------------------------------------------
+DIAPO 3 — PROPOSITION DE VALEUR  (0:40 – 1:00)
+----------------------------------------------------------------
+SUR LA DIAPO : une phrase + le visuel des deux piliers.
+DIRE :
+« SANAD soulage ce mal avec une seule plateforme pour tout le
+parcours : vous vérifiez votre identité une seule fois —
+réutilisable entre assureurs — puis vous déclarez vos sinistres
+24h/24, en français, en arabe ou en derja, et vous obtenez une
+décision immédiate. Pour l'assureur : des coûts de traitement
+réduits. Pour le client : des minutes au lieu de semaines, dans
+sa langue. »
+
+----------------------------------------------------------------
+DIAPO 4 — MAGIE SOUS-JACENTE + DÉMO  (1:00 – 1:55)
+----------------------------------------------------------------
+SUR LA DIAPO : le schéma des 3 gates (montant / confiance IA /
+fraude) — des figures, pas du texte. Puis DÉMO EN DIRECT.
+DIRE (15 s) :
+« Notre ingrédient secret est une règle : l'IA n'a le droit
+d'auto-approuver un sinistre que si trois feux sont verts —
+petit montant, confiance élevée, risque de fraude faible. Sinon,
+un humain décide, et chaque décision est enregistrée avec ses
+raisons. Les documents d'identité sont traités en local — ils ne
+quittent jamais le serveur. Regardez, c'est en direct. »
+
+DÉMO (30 secondes, préchargée, répétée) :
+  1. Message en derja — « sadamt fi 9alb el mdina » — le bot
+     répond en derja, la fiche sinistre se remplit toute seule.
+  2. Photo des dégâts → estimation de réparation en dinars.
+  3. LE MOMENT CLÉ : la bannière de décision — verte
+     « auto-approuvé » ou orange « transmis à un expert humain »,
+     avec la raison affichée.
+
+DIRE (10 s) :
+« L'automatisation quand l'IA est sûre. Un humain quand elle
+doute. Une piste d'audit qu'un régulateur peut lire. »
+
+----------------------------------------------------------------
+DIAPO 5 — BUSINESS MODEL  (1:55 – 2:15)
+----------------------------------------------------------------
+SUR LA DIAPO : qui paie / canal / tarification, 3 puces.
+DIRE :
+« Qui paie : les assureurs. Comment : en SaaS — une redevance par
+identité vérifiée, une redevance par sinistre traité, plus un
+abonnement plateforme. Le KYC réutilisable est notre effet
+d'entraînement : chaque assureur qui rejoint le réseau rend
+chaque identité vérifiée plus précieuse pour le suivant. »
+
+----------------------------------------------------------------
+DIAPO 6 — STRATÉGIE DE COMMERCIALISATION  (2:15 – 2:35)
+----------------------------------------------------------------
+SUR LA DIAPO : flèche en 3 étapes : 1 pilote → sinistres auto
+< 500 TND → marché.
+DIRE :
+« Nous ne vendons pas une plateforme, nous vendons un pilote : un
+assureur tunisien, les petits sinistres auto de moins de 500
+dinars — le plus gros volume, l'automatisation la plus sûre. La
+distribution est du B2B direct : le marché tunisien compte une
+vingtaine de compagnies — on peut toutes les rencontrer. Les
+résultats mesurés du pilote deviennent notre argumentaire de
+vente. »
+
+----------------------------------------------------------------
+DIAPO 7 — ANALYSE CONCURRENTIELLE  (2:35 – 2:55)
+----------------------------------------------------------------
+SUR LA DIAPO : tableau comparatif SANAD / Tractable / Shift.
+DIRE :
+« Tractable estime les dégâts véhicules ; Shift Technology
+détecte la fraude. Les deux sont excellents sur leur maillon de
+la chaîne — leurs modèles sont plus profonds que les nôtres, et
+nous le disons. Mais ils sont cloud uniquement, à prix
+enterprise, sans derja. Les clients choisiront SANAD pour le
+parcours complet, des données d'identité qui peuvent rester dans
+le pays, la loi tunisienne intégrée nativement, et un prix
+dimensionné pour ce marché. »
+
+----------------------------------------------------------------
+DIAPO 8 — ÉQUIPE  (2:55 – 3:05)
+----------------------------------------------------------------
+SUR LA DIAPO : photos, noms, rôles ; conseillers/partenaires si
+vous en avez.
+DIRE :
+« Nous sommes [noms/rôles]. En 48 heures, nous avons livré la
+plateforme fonctionnelle que vous venez de voir — deux services
+d'IA, 46 tests automatisés, un dépôt public. »
+
+----------------------------------------------------------------
+DIAPO 9 — PRÉVISIONS FINANCIÈRES ET CHIFFRES CLÉS  (3:05 – 3:30)
+----------------------------------------------------------------
+SUR LA DIAPO : petit tableau, titré clairement « Hypothèses de
+travail — à valider par le pilote » :
+  · Année 1 : 1 assureur pilote · Année 3 : 4-6 assureurs
+    (sur ~20 en Tunisie)
+  · Volumes : ~10k identités vérifiées et ~5k sinistres (A1)
+    vers ~100k identités / 50k sinistres cumulés à 5 ans
+  · Hypothèse de tarification : redevance par identité + par
+    sinistre de l'ordre de quelques dinars + abonnement
+  · Moteur des unit economics : -25 à -30 % de coût de
+    traitement (formule : temps agent × taux horaire × %
+    auto-approuvé)
+  · TRI : calculé après calibration du pilote — nous ne
+    l'inventerons pas
+DIRE :
+« Nos chiffres sont de deux natures. Mesurés : moins quatre-vingts
+pour cent de temps de déclaration, un KYC en cinq minutes,
+quarante-six tests au vert. Prévisionnels — et la diapo dit
+"hypothèses" à dessein : un assureur pilote en année un, quatre à
+six en année trois, avec une tarification par identité et par
+sinistre. Nous ne montrons volontairement pas de TRI aujourd'hui :
+ce serait de la fiction avant que le pilote ne calibre le taux
+d'auto-approbation. Cette honnêteté, c'est notre méthode. »
+
+----------------------------------------------------------------
+DIAPO 10 — SITUATION ACTUELLE, RÉALISATIONS, PLANNING,
+UTILISATION DES FONDS  (3:30 – 3:50)
+----------------------------------------------------------------
+SUR LA DIAPO : frise MVP ✓ → Pilote (3-6 mois) → Marché (6-18
+mois) ; camembert des fonds : ingénierie / opérations pilote /
+conformité.
+DIRE :
+« Aujourd'hui : le parcours de bout en bout fonctionne — eKYC,
+chat en derja, estimation des dégâts, décisions sous contrôle —
+code public, déployable en une commande. Ensuite : le pilote,
+trois à six mois, pour calibrer nos seuils sur des données
+réelles. Les fonds levés iront à trois postes : durcissement de
+l'ingénierie, opérations du pilote avec l'assureur partenaire, et
+travail de conformité réglementaire. »
+
+----------------------------------------------------------------
+DIAPO 11 — CONCLUSION (ORIENTÉE ACTION)  (3:50 – 4:00)
+----------------------------------------------------------------
+SUR LA DIAPO : une ligne + contact : « Un pilote. Trois mois.
+Une preuve mesurée. » + email/téléphone.
+DIRE :
+« Souvenez-vous du conducteur de Sfax — trois semaines pour un
+pare-chocs. Donnez-nous un assureur et trois mois, et nous
+remplaçons les estimations par des mesures. SANAD : assuré en
+cinq minutes, déclaré en trois, décidé sous contrôle. Merci. »
+
+================================================================
+CONSEILS DU WORKSHOP — OÙ CE SCRIPT LES APPLIQUE
+================================================================
+✔ Raconter une histoire (le pourquoi) → le conducteur de Sfax
+  ouvre (D2) et ferme (D11) le pitch.
+✔ Éviter de survendre → D9 titrée « hypothèses » ; TRI refusé
+  tant qu'il n'y a pas de données pilote.
+✔ Reconnaître la concurrence → D7 admet que Tractable/Shift ont
+  des modèles plus profonds ; notre avantage est le périmètre et
+  la souveraineté.
+✔ Zéro superlatif → aucun « meilleur/unique/révolutionnaire ».
+✔ Adresser les risques → D7 (concurrence), D9 (seuils non
+  calibrés), D10 (le pilote les dérisque).
+✔ Simple et précis → aucun jargon à l'oral (SHAP/LLM/YOLO restent
+  pour la Q&A) ; les diapos portent des figures, pas du texte.
+✔ Mettre en avant les bénéfices → 5 min / 3 min / décision
+  immédiate, répétés en D1, D3 et D11.
+✔ Impliquer l'auditoire → la démo en direct + « Souvenez-vous du
+  conducteur de Sfax… ».
+✔ Répéter et personnaliser → minutage par diapo + liste de coupes
+  ci-dessous.
+
+================================================================
+PRÉPARATION Q&A (4 minutes — questions anticipées)
+================================================================
+
+Q : « Trop ambitieux pour un hackathon — qu'est-ce qui marche
+     vraiment ? »
+R : « Tout ce qui a été démontré tourne de bout en bout : OCR de
+    la CIN en arabe, filtrage AML, liveness, chat en derja,
+    estimation des dégâts par photo, décision sous contrôle,
+    persistance en base. 46 tests automatisés sont au vert. Ce
+    qui n'est PAS dans le MVP est listé volontairement :
+    intégration aux SI assureurs, paiements réels, sinistres
+    corporels complexes — c'est la phase pilote et au-delà. »
+
+Q : « D'où sortent vos 25-30 % de réduction de coûts ? »
+R : « C'est une estimation, étiquetée comme telle : coût = temps
+    agent × taux horaire ; notre -80 % de temps de déclaration
+    mesuré plus une hypothèse de 40-60 % d'éligibilité à
+    l'auto-approbation sur les sinistres < 500 dinars. Les études
+    sectorielles sur l'automatisation des sinistres donnent le
+    même ordre de grandeur. Le premier livrable du pilote, c'est
+    de remplacer cette estimation par une mesure. »
+
+Q : « Pourquoi pas de prévision de CA / TRI ? »
+R : « Parce que ce serait de la fiction. Nos unit economics
+    dépendent d'un chiffre qu'on ne peut pas encore connaître :
+    le taux réel d'auto-approbation sur de vrais sinistres. Le
+    pilote le mesure ; le jour où on l'a, le TRI est de
+    l'arithmétique. Nous préférons une inconnue honnête à cinq
+    certitudes inventées. »
+
+Q : « Pourquoi un assureur ferait-il confiance à des décisions
+     automatiques ? »
+R : « Notre IA est bridée par construction : elle ne peut
+    auto-approuver que si montant, confiance ET score de fraude
+    sont tous au vert — sinon un humain décide. Chaque décision
+    automatique est persistée avec le gate qui l'a produite et
+    les facteurs pondérés derrière. C'est une piste d'audit qu'un
+    régulateur peut lire. »
+
+Q : « Où vivent les données ? »
+R : « Les documents d'identité et les selfies sont traités en
+    local par notre propre service — ils ne partent jamais vers
+    un fournisseur d'IA cloud. Seuls les photos de sinistres et
+    le texte des documents passent par des API d'IA externes. Le
+    déploiement on-premise chez l'assureur est la topologie
+    cible. »
+
+Q : « Quelle différence avec Tractable / Shift ? »
+R : « Le périmètre, la langue, la souveraineté. Eux automatisent
+    un maillon pour des marchés matures, dans le cloud. Nous
+    couvrons eKYC plus sinistres en un seul parcours, en derja,
+    avec la Loi 2015-26 native, déployable dans les murs de
+    l'assureur. Autre marché, autre promesse. »
+
+Q : « Quel est votre avantage défendable (moat) ? »
+R : « Le réseau du KYC réutilisable : un CIN égale un dossier
+    vérifié, portable entre assureurs membres. Chaque assureur
+    qui rejoint rend l'onboarding du suivant moins cher — un
+    effet cumulatif qu'une solution ponctuelle étrangère ne peut
+    pas répliquer facilement. »
+
+================================================================
+CONSEILS DE LIVRAISON
+================================================================
+- 11 diapos en 4:00, c'est RAPIDE : certaines diapos durent 10
+  secondes — c'est normal en format Kawasaki ; la diapo
+  s'affiche, vous dites une phrase, vous avancez.
+- Liste de coupes si vous dépassez : réduisez d'abord D2 (le hook
+  la porte déjà), puis D8 à une phrase. Ne coupez JAMAIS la démo
+  (D4) ni l'honnêteté de D9.
+- Règle du template pour D4 : des figures et des schémas, pas du
+  texte. Mettez le schéma des 3 gates, rien d'autre.
+- Préchargez la démo : chat ouvert, photos prêtes, session
+  connectée. Enregistrez une vidéo de secours de 30 s au cas où
+  le Wi-Fi lâche.
+- Un seul orateur pour le pitch ; changez d'orateur seulement à
+  la Q&A.
+- Contact visuel avec le jury sur D2 (hook) et D11 (demande) —
+  ne lisez RIEN sur ces deux moments.
+- Terminez exactement sur : « assuré en cinq minutes, déclaré en
+  trois, décidé sous contrôle. »
+================================================================
