@@ -1,133 +1,173 @@
 ================================================================
 SANAD — 4-MINUTE PITCH SCRIPT (English)
-Structure: WORKSHOP BACKBONE
-  Hook (custom) → 1. Problem → 2. Solution (+30s demo)
-  → 3. Business model → Traction & Impact (custom)
-  → 4. Team → Risks (custom) → 5. Call to action
-Format: 4 min pitch + 4 min Q&A · ~500 spoken words + 30s demo
+Structure: OFFICIAL TEMPLATE — Guy Kawasaki 10 slides (Enactus)
++ action-oriented conclusion slide, demo inside Slide 4
+Format: 4 min pitch + 4 min Q&A · ~30-second demo max
 ================================================================
+Workshop tips baked in: story hook, no superlatives, competition
+acknowledged, risks addressed, measured-vs-estimated numbers.
 
 ----------------------------------------------------------------
-HOOK  (0:00 – 0:20)   [custom 15% — "tell a story: the why"]
+SLIDE 1 — TITLE  (0:00 – 0:10)
 ----------------------------------------------------------------
+ON SLIDE: SANAD logo · team names & roles · email · phone.
 SAY:
-"Last month, a driver in Sfax had a small accident. A dented
-bumper, nothing more. It took him three weeks, two trips to an
-agency, and forms in a language he doesn't live in, to get an
-answer. Three weeks... for a bumper. That driver is why we built
-SANAD."
-
-[Pause one beat. Let it land.]
+"Good afternoon. We are [names], and this is SANAD — insurance
+for Tunisia: verified in five minutes, declared in three."
 
 ----------------------------------------------------------------
-1. PROBLEM  (0:20 – 0:50)
+SLIDE 2 — PROBLEM / OPPORTUNITY  (0:10 – 0:40)
 ----------------------------------------------------------------
+ON SLIDE: the Sfax driver photo + 3 pain icons.
 SAY:
-"His story is the Tunisian insurance market in miniature. KYC is
-paper-based, in-branch, and every insurer makes you redo it from
-zero. Declaring a claim means fifteen to twenty minutes of forms,
-office hours only, then days of manual processing. Forms are in
-French, while the client's real language is derja. And the check
-between what you declare and what your photo shows barely exists.
-Insurers lose money on every small claim; honest clients wait."
+"Last month, a driver in Sfax dented a bumper. It took him three
+weeks and two agency visits to get an answer. His story is the
+market in miniature: KYC is paper-based and redone at every
+insurer; declaring a claim means fifteen to twenty minutes of
+forms then days of processing, office hours only; and the forms
+are in French while the client's real language is derja. Insurers
+lose money on every small claim. Honest clients wait."
 
 ----------------------------------------------------------------
-2. SOLUTION + 30-SECOND DEMO  (0:50 – 1:55)
+SLIDE 3 — VALUE PROPOSITION  (0:40 – 1:00)
 ----------------------------------------------------------------
-SAY (25s):
-"SANAD is one platform for the full journey — identity to
-indemnity. Verify your identity once: ID scan, selfie with
-anti-spoofing, AML screening aligned with Law 2015-26 — processed
-locally, so identity data can stay inside the insurer's walls.
-Then declare claims 24/7, in French, Arabic, or derja. And one
-rule above all: our AI may only auto-approve a claim when three
-lights are green — small amount, high confidence, low fraud risk.
-Otherwise a human expert decides. Let me show you — this runs."
+ON SLIDE: one sentence + the two-pillar visual.
+SAY:
+"SANAD relieves that pain with one platform for the full journey:
+verify your identity once — reusable across insurers — then
+declare claims 24/7 in French, Arabic or derja, and get a
+decision on the spot. For insurers: lower processing costs. For
+clients: minutes instead of weeks, in their own language."
+
+----------------------------------------------------------------
+SLIDE 4 — UNDERLYING MAGIC + DEMO  (1:00 – 1:55)
+----------------------------------------------------------------
+ON SLIDE: the 3-gates schema (amount / AI confidence / fraud) —
+figures, not text. Then LIVE DEMO.
+SAY (15s):
+"Our secret ingredient is a rule: the AI may only auto-approve a
+claim when three lights are green — small amount, high
+confidence, low fraud risk. Otherwise a human decides, and every
+decision is stored with its reasons. Identity documents are
+processed locally — they never leave the server. Here it is,
+live."
 
 DEMO (30 seconds, pre-loaded, rehearsed):
-  1. Chat open: type the derja message — "sadamt fi 9alb el
-     mdina" — the bot replies in derja, claim fields fill in.
-  2. Upload the damage photo → repair estimate in dinars.
-  3. THE MONEY SHOT: the decision banner — green "auto-approved",
-     or amber "routed to a human expert", with the reason.
+  1. Derja message — "sadamt fi 9alb el mdina" — bot replies in
+     derja, claim fields fill in.
+  2. Damage photo → repair estimate in dinars.
+  3. THE MONEY SHOT: decision banner — green "auto-approved" or
+     amber "routed to a human expert", with the reason.
 
-SAY (10s, over the banner):
-"Automation when the AI is sure, a human when it doubts — and
-every decision is stored with the factors behind it. That is an
-audit trail a regulator can read."
+SAY (10s):
+"Automation when the AI is sure. A human when it doubts. An audit
+trail a regulator can read."
 
 ----------------------------------------------------------------
-3. BUSINESS MODEL  (1:55 – 2:20)
+SLIDE 5 — BUSINESS MODEL  (1:55 – 2:15)
 ----------------------------------------------------------------
+ON SLIDE: who pays / channel / pricing, 3 bullets.
 SAY:
-"We sell SaaS to insurers: a fee per verified identity, a fee per
-processed claim. The verified identity is reusable — one CIN, one
-KYC, portable between member insurers. Each insurer that joins
-makes the next one's onboarding cheaper. That network effect is
-our long-term defensibility."
+"Who pays: insurers. How: SaaS — a fee per verified identity and
+a fee per processed claim, plus a platform subscription. The
+reusable KYC is the flywheel: each insurer that joins makes every
+verified identity more valuable to the next one."
 
 ----------------------------------------------------------------
-TRACTION & IMPACT  (2:20 – 2:55)   [custom 15% — honest numbers]
+SLIDE 6 — GO-TO-MARKET  (2:15 – 2:35)
 ----------------------------------------------------------------
+ON SLIDE: 3-step arrow: 1 pilot → auto claims < 500 TND → market.
 SAY:
-"What exists today, measured on the product you just saw:
-declaration time down from fifteen-plus minutes to about three.
-Identity verified in five minutes. Eighty-two percent OCR
-confidence on a real Tunisian ID. Forty-six automated tests,
-green, on a public repository. What we estimate — and we label it
-as an estimate: if forty to sixty percent of small claims pass
-our three gates, processing costs drop twenty-five to thirty
-percent, in line with published studies on claims automation.
-The pilot exists to turn that estimate into a measurement."
+"We don't sell a platform, we sell a pilot: one Tunisian insurer,
+small auto claims under 500 dinars — highest volume, safest
+automation. Distribution is direct B2B: the Tunisian insurance
+market is roughly twenty companies — you can meet them all. The
+pilot's measured results become our sales deck."
 
 ----------------------------------------------------------------
-4. TEAM  (2:55 – 3:10)
+SLIDE 7 — COMPETITIVE ANALYSIS  (2:35 – 2:55)
 ----------------------------------------------------------------
-SAY (adapt names/roles):
-"We are [names/roles]. In 48 hours we shipped the full journey —
-two AI services, tests, one-command deployment. We execute."
-
-----------------------------------------------------------------
-RISKS — ACKNOWLEDGED  (3:10 – 3:30)   [custom 15% — address risks]
-----------------------------------------------------------------
+ON SLIDE: comparison table SANAD / Tractable / Shift.
 SAY:
-"We know our risks. Competitors like Tractable and Shift have
-deeper models on their single link — our edge is scope, language
-and data sovereignty, not out-modeling them. Our thresholds are
-hypotheses until calibrated on real claims data. And regulatory
-adoption takes a partner, not a promise. That is exactly what our
-pilot is designed to de-risk."
+"Tractable estimates vehicle damage; Shift Technology detects
+fraud. Both are excellent at their link of the chain — deeper
+models than ours, and we say so. But they are cloud-only,
+enterprise-priced, without derja. Clients choose SANAD for the
+full journey, identity data that can stay in-country, Tunisian
+law built in, and a price sized for this market."
 
 ----------------------------------------------------------------
-5. CALL TO ACTION  (3:30 – 4:00)
+SLIDE 8 — TEAM  (2:55 – 3:05)
 ----------------------------------------------------------------
+ON SLIDE: photos, names, roles; advisors/partners if any.
 SAY:
-"So here is our ask: one Tunisian insurer for a pilot on small
-auto claims, access to anonymized data to calibrate our
-thresholds, and regulatory guidance. Remember the driver from
-Sfax — three weeks for a bumper. With SANAD: insured in five
-minutes, declared in three, decided with control. Join us. Thank
-you."
+"We are [names/roles]. In 48 hours we shipped the working
+platform you just saw — two AI services, 46 automated tests, one
+public repository."
+
+----------------------------------------------------------------
+SLIDE 9 — FINANCIAL FORECASTS & KEY METRICS  (3:05 – 3:30)
+----------------------------------------------------------------
+ON SLIDE: small table, clearly titled "Working hypotheses —
+to be validated by the pilot":
+  · Year 1: 1 pilot insurer · Year 3: 4-6 insurers (of ~20 in TN)
+  · Volume: from ~10k verified identities and ~5k claims (Y1)
+    to ~100k identities / 50k claims cumulative by Year 5
+  · Pricing hypothesis: per-identity + per-claim fees in the
+    single-digit-dinar range + platform subscription
+  · Unit economics driver: -25 to -30% claim processing cost
+    (formula: agent time × hourly rate × % auto-approved)
+  · IRR: computed after pilot calibration — we will not invent it
+SAY:
+"Our numbers come in two kinds. Measured: minus eighty percent
+declaration time, five-minute KYC, forty-six green tests.
+Forecast — and the slide says 'hypotheses' on purpose: one pilot
+insurer in year one, four to six by year three, with per-identity
+and per-claim pricing. We deliberately do not show an IRR today:
+it would be fiction before the pilot calibrates the auto-approval
+rate. That honesty is our method."
+
+----------------------------------------------------------------
+SLIDE 10 — STATUS, ACHIEVEMENTS, ROADMAP & USE OF FUNDS  (3:30 – 3:50)
+----------------------------------------------------------------
+ON SLIDE: timeline MVP ✓ → Pilot (3-6 mo) → Market (6-18 mo);
+funds pie: engineering / pilot ops / compliance.
+SAY:
+"Today: the end-to-end journey works — eKYC, derja chat, damage
+estimation, gated decisions — code public, deployable in one
+command. Next: the pilot, three to six months, to calibrate our
+thresholds on real data. Support we raise goes three ways:
+engineering hardening, pilot operations with the partner insurer,
+and regulatory compliance work."
+
+----------------------------------------------------------------
+SLIDE 11 — CONCLUSION (ACTION-ORIENTED)  (3:50 – 4:00)
+----------------------------------------------------------------
+ON SLIDE: one line + contact: "One pilot. Three months. Measured
+proof." + email/phone.
+SAY:
+"Remember the driver from Sfax — three weeks for a bumper. Give
+us one insurer and three months, and we replace estimates with
+measurements. SANAD: insured in five minutes, declared in three,
+decided with control. Thank you."
 
 ================================================================
-WORKSHOP TIPS — HOW THIS SCRIPT APPLIES THEM
+WORKSHOP TIPS — WHERE THIS SCRIPT APPLIES THEM
 ================================================================
-✔ Avoid overpromising   → impact split MEASURED vs ESTIMATED,
-                          estimate explicitly labeled.
-✔ Acknowledge competition → Tractable/Shift named, their strength
-                          admitted ("deeper models"), our edge scoped.
-✔ Skip superlatives     → no "revolutionary/best/unique" anywhere;
-                          facts and numbers instead.
-✔ Address risks         → dedicated 20-second section (rare in
-                          hackathon pitches — juries notice).
-✔ Keep it simple        → one idea per section, no tech jargon
-                          (no "SHAP/LLM/YOLO" in the spoken text).
-✔ Highlight benefits    → 5 min / 3 min / decision on the spot,
-                          repeated at hook and close.
-✔ Tell a story (the why)→ the Sfax driver opens AND closes (loop).
-✔ Involve the audience  → "Remember the driver from Sfax" +
-                          the live demo moment.
-✔ Practice & customize  → timing per section, cut-list below.
+✔ Tell a story (the why) → Sfax driver opens (S2) and closes (S11).
+✔ Avoid overpromising    → S9 labeled "hypotheses"; IRR refused
+                           until pilot data exists.
+✔ Acknowledge competition→ S7 admits Tractable/Shift have deeper
+                           models; our edge is scope + sovereignty.
+✔ Skip superlatives      → no "best/unique/revolutionary" anywhere.
+✔ Address risks          → S7 (competition), S9 (uncalibrated
+                           thresholds), S10 (pilot de-risks them).
+✔ Keep it simple         → no jargon spoken (SHAP/LLM/YOLO stay in
+                           Q&A); slides carry figures, not text.
+✔ Highlight benefits     → 5 min / 3 min / decision on the spot,
+                           repeated in S1, S3 and S11.
+✔ Involve the audience   → live demo + "Remember the driver…".
+✔ Practice & customize   → timings per slide + cut-list below.
 
 ================================================================
 Q&A PREPARATION (4 minutes — anticipated questions)
@@ -139,14 +179,22 @@ A: "Everything we demoed runs end-to-end: Arabic ID OCR, AML
    decision, database persistence. 46 automated tests are green.
    What is NOT in the MVP is deliberately listed: insurer system
    integration, real payouts, complex bodily-injury claims —
-   that's Phase 2 and 3."
+   that's the pilot phase and beyond."
 
 Q: "Where does your 25-30% cost reduction come from?"
 A: "It's an estimate, labeled as such: cost = agent time × hourly
    rate; our measured -80% declaration time plus a 40-60%
    auto-approval eligibility hypothesis on sub-500-dinar claims.
-   Industry studies land in the same range. The pilot's first
-   deliverable is replacing this estimate with a measured number."
+   Industry studies on claims automation land in the same range.
+   The pilot's first deliverable is replacing this estimate with
+   a measured number."
+
+Q: "Why no revenue forecast / IRR?"
+A: "Because it would be fiction. Our unit economics depend on one
+   number we can't know yet: the real auto-approval rate on real
+   claims. The pilot measures it; the day we have it, the IRR is
+   arithmetic. We prefer one honest unknown to five invented
+   certainties."
 
 Q: "Why would an insurer trust automated decisions?"
 A: "Our AI is constrained by construction: it can only
@@ -176,18 +224,17 @@ A: "The reusable-KYC network: one CIN equals one verified
 ================================================================
 DELIVERY TIPS
 ================================================================
-- 4:00 is BRUTAL. Rehearse with a timer. Cut-list if over:
-  first trim PROBLEM (the hook carries it), then TEAM to one
-  sentence. Never cut the demo or the risks section.
-- Hook and close mirror each other (Sfax driver) — learn both by
-  heart, never improvise them.
+- 11 slides in 4:00 is FAST: some slides get 10 seconds — that's
+  normal in Kawasaki format; the slide shows, you say one line.
+- Cut-list if over time: trim S2 (the hook carries it), then S8
+  to one sentence. NEVER cut the demo (S4) or honesty of S9.
+- Slide 4 rule from the template: figures and schemas, not text.
+  Put the 3-gates diagram, nothing else.
 - Pre-load the demo: chat open, photos ready, logged in. Record a
   30s backup video in case Wi-Fi dies.
 - One speaker for the pitch; switch speakers only at Q&A.
-- Eye contact on the jury during the hook and the ask — read
-  NOTHING on those two sections.
-- During the demo, say only the scripted lines — let the decision
-  banner do the talking.
+- Eye contact on the jury during S2 (hook) and S11 (ask) — read
+  NOTHING on those two.
 - End exactly on: "insured in five minutes, declared in three,
-  decided with control. Join us."
+  decided with control."
 ================================================================
