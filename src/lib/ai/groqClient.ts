@@ -221,19 +221,21 @@ export async function groqVisionChat(
         },
     ] as const;
 
-    const requestBody = (jsonMode: boolean, reasoningFormat: 'hidden' | 'parsed' | null) => ({
+    const requestBody = (jsonMode: boolean, reasoningFormat: 'hidden' | 'parsed' | null, noReasoning = false) => ({
         model: DEFAULT_VISION_MODEL,
         messages,
         temperature: opts.temperature ?? 0.15,
         max_completion_tokens: opts.maxTokens ?? DEFAULT_VISION_MAX_TOKENS,
-        // Reasoning models (Qwen) emit <think> blocks that consume the whole
-        // completion budget and break JSON parsing — ask Groq to hide them.
-        ...(reasoningFormat ? { reasoning_format: reasoningFormat } : {}),
+        // Reasoning models (Qwen) spend seconds "thinking" before answering.
+        // Best case: disable reasoning entirely (fast + clean). If the model
+        // rejects the param, the attempt ladder falls back to hidden reasoning.
+        ...(noReasoning ? { reasoning_effort: 'none' } : {}),
+        ...(reasoningFormat && !noReasoning ? { reasoning_format: reasoningFormat } : {}),
         ...(jsonMode ? { response_format: { type: 'json_object' } } : {}),
     });
 
-    const call = async (jsonMode: boolean, reasoningFormat: 'hidden' | 'parsed' | null = 'hidden') => {
-        const res = await groqFetch(apiKey, requestBody(jsonMode, reasoningFormat));
+    const call = async (jsonMode: boolean, reasoningFormat: 'hidden' | 'parsed' | null = 'hidden', noReasoning = false) => {
+        const res = await groqFetch(apiKey, requestBody(jsonMode, reasoningFormat, noReasoning));
 
         if (!res.ok) {
             const errText = await res.text().catch(() => '');
@@ -256,10 +258,11 @@ export async function groqVisionChat(
         return call(false);
     }
 
-    // Degrade gracefully: strict JSON + hidden reasoning → parsed reasoning →
-    // plain text with hidden reasoning → plain text without any extra params
-    // (in case the configured model rejects reasoning_format).
-    const jsonAttempts: Array<{ jsonMode: boolean; reasoningFormat: 'hidden' | 'parsed' | null }> = [
+    // Degrade gracefully: no-reasoning (fastest) → strict JSON + hidden
+    // reasoning → parsed reasoning → plain text with hidden reasoning →
+    // plain text without extra params (if the model rejects them).
+    const jsonAttempts: Array<{ jsonMode: boolean; reasoningFormat: 'hidden' | 'parsed' | null; noReasoning?: boolean }> = [
+        { jsonMode: true, reasoningFormat: null, noReasoning: true },
         { jsonMode: true, reasoningFormat: 'hidden' },
         { jsonMode: true, reasoningFormat: 'parsed' },
         { jsonMode: false, reasoningFormat: 'hidden' },
@@ -269,7 +272,7 @@ export async function groqVisionChat(
     let lastError: unknown;
     for (const attempt of jsonAttempts) {
         try {
-            return await call(attempt.jsonMode, attempt.reasoningFormat);
+            return await call(attempt.jsonMode, attempt.reasoningFormat, attempt.noReasoning ?? false);
         } catch (err) {
             lastError = err;
             const message = err instanceof Error ? err.message : '';

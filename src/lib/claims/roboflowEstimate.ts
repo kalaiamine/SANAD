@@ -1,6 +1,12 @@
-import type { DamageEstimateResult } from '@/lib/ai/damageEstimatePrompt';
+import type { DamageEstimateResult, DamageLineItem } from '@/lib/ai/damageEstimatePrompt';
 import { estimateClaims, type AssessmentResult } from '@/lib/costEstimator';
 import { detectVehicleDamage } from '@/lib/roboflow';
+
+const SEVERITY_MAP: Record<string, DamageLineItem['severity']> = {
+    Minor: 'legere',
+    Medium: 'moderee',
+    Severe: 'severe',
+};
 
 function brandMultiplier(brand: string): number {
     const b = brand.toLowerCase();
@@ -66,6 +72,16 @@ export function assessmentToDamageEstimate(assessment: AssessmentResult, brand =
         explanation += ` Coefficient marque appliqué (×${mult}).`;
     }
 
+    // Per-damage breakdown: each YOLO detection priced individually (brand
+    // multiplier applied), so the client sees exactly what drives the total.
+    const items: DamageLineItem[] = assessment.damages.map((d) => ({
+        part: d.part,
+        type: d.type,
+        severity: SEVERITY_MAP[d.severity] ?? 'moderee',
+        costMin: Math.round(d.estimatedCost * mult * 0.9),
+        costMax: Math.round(d.estimatedCost * mult * 1.15),
+    }));
+
     return {
         damageVisible: assessment.damages.length > 0,
         detectedDamage,
@@ -74,6 +90,7 @@ export function assessmentToDamageEstimate(assessment: AssessmentResult, brand =
         estimatedCostMax: max,
         confidence,
         explanation,
+        items,
     };
 }
 

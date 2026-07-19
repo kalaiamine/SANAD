@@ -266,6 +266,27 @@ function DamageEstimateCard({ data }: { data: DamageEstimateCardData }) {
                     {result.estimatedCostMin.toLocaleString('fr-FR')} – {result.estimatedCostMax.toLocaleString('fr-FR')} TND
                 </p>
                 <p className="text-sm text-foreground leading-relaxed">{result.detectedDamage}</p>
+                {result.items && result.items.length > 0 && (
+                    <div className="border border-border rounded-xl overflow-hidden">
+                        <div className="grid grid-cols-[1fr_auto] gap-2 px-3 py-2 bg-muted text-[10px] uppercase tracking-wide font-bold text-muted-foreground">
+                            <span>Dégât constaté</span>
+                            <span>Coût estimé</span>
+                        </div>
+                        {result.items.map((item, i) => (
+                            <div key={i} className="grid grid-cols-[1fr_auto] gap-2 px-3 py-2 border-t border-border items-center">
+                                <div>
+                                    <p className="text-xs font-medium text-foreground">{item.part}</p>
+                                    <p className="text-[11px] text-muted-foreground">
+                                        {item.type} · {item.severity === 'legere' ? 'légère' : item.severity === 'moderee' ? 'modérée' : 'sévère'}
+                                    </p>
+                                </div>
+                                <p className="text-xs font-semibold text-foreground whitespace-nowrap">
+                                    {item.costMin.toLocaleString('fr-FR')}–{item.costMax.toLocaleString('fr-FR')} TND
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                )}
                 <p className="text-xs text-muted-foreground leading-relaxed">{result.explanation}</p>
                 <p className="text-[10px] text-muted-foreground pt-2 border-t border-border">
                     Estimation indicative générée automatiquement (confiance {result.confidence}%) — le montant définitif sera confirmé par un expert ou un garage agréé.

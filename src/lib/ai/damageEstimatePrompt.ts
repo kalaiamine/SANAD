@@ -4,6 +4,19 @@
 // non-binding estimate meant to give the claimant a sense of scale while
 // they wait for a human adjuster / garage quote — never a final figure.
 
+/** One damage line item: a single visible damage priced individually. */
+export interface DamageLineItem {
+    /** Vehicle part, French label, e.g. "Pare-chocs avant". */
+    part: string;
+    /** Damage type, French label, e.g. "Enfoncement avec peinture cassée". */
+    type: string;
+    severity: 'legere' | 'moderee' | 'severe';
+    /** Low end of the repair cost for THIS damage, in TND. */
+    costMin: number;
+    /** High end of the repair cost for THIS damage, in TND. */
+    costMax: number;
+}
+
 export interface DamageEstimateResult {
     /** Whether the photo shows visible vehicle damage at all. */
     damageVisible: boolean;
@@ -19,6 +32,8 @@ export interface DamageEstimateResult {
     confidence: number;
     /** 1-2 sentence French explanation of what drives the estimate. */
     explanation: string;
+    /** Per-damage breakdown — each visible damage priced individually. */
+    items?: DamageLineItem[];
 }
 
 export const DAMAGE_ESTIMATE_SYSTEM_PROMPT = `Tu es un assistant d'expertise automobile pour une plateforme d'assurance tunisienne (SANAD). Tu reçois UNE photo de dommages sur un véhicule suite à un accident.
@@ -35,17 +50,23 @@ Repères indicatifs de marché tunisien (pièces + main d'oeuvre, à ajuster sel
 - Portière enfoncée ou déformée: 500–1800 TND
 - Dommages structurels/multiples panneaux/airbag/déformation du châssis: 2000–8000+ TND
 
-Si aucun dommage n'est visible ou si la photo ne représente pas un véhicule, indique damageVisible=false, "detectedDamage": "Non-véhicule ou aucun dégât visible" et une fourchette à 0.
+3. **Détail par dégât** : Liste dans "items" CHAQUE dégât visible séparément (pièce touchée, type de dégât, sévérité, fourchette de coût pour CE dégât précis en TND, alignée sur les repères ci-dessus). La fourchette globale (estimatedCostMin/Max) doit être cohérente avec la somme des items. Ne liste que ce qui est réellement visible sur la photo — n'invente jamais un dégât non visible.
+
+Si aucun dommage n'est visible ou si la photo ne représente pas un véhicule, indique damageVisible=false, "detectedDamage": "Non-véhicule ou aucun dégât visible", une fourchette à 0 et "items": [].
 
 Réponds en JSON STRICT UNIQUEMENT (pas de markdown, pas de texte hors JSON), exactement sous cette forme:
 {
   "damageVisible": true,
-  "detectedDamage": "pare-chocs avant enfoncé avec rayures",
+  "detectedDamage": "pare-chocs avant enfoncé avec rayures, phare droit fissuré",
   "severity": "moderee",
-  "estimatedCostMin": 400,
-  "estimatedCostMax": 900,
+  "estimatedCostMin": 650,
+  "estimatedCostMax": 1500,
   "confidence": 75,
-  "explanation": "Enfoncement localisé du pare-chocs nécessitant probablement réparation et retouche peinture."
+  "explanation": "Enfoncement localisé du pare-chocs et optique avant fissuré nécessitant réparation, remplacement du phare et retouche peinture.",
+  "items": [
+    { "part": "Pare-chocs avant", "type": "Enfoncement avec rayures", "severity": "moderee", "costMin": 400, "costMax": 900 },
+    { "part": "Phare avant droit", "type": "Fissure de l'optique", "severity": "legere", "costMin": 250, "costMax": 600 }
+  ]
 }`;
 
 export function buildDamageEstimateUserText(): string {
