@@ -18,15 +18,21 @@ for Tunisia: verified in five minutes, declared in three."
 ----------------------------------------------------------------
 SLIDE 2 — PROBLEM / OPPORTUNITY  (0:10 – 0:40)
 ----------------------------------------------------------------
-ON SLIDE: the Sfax driver photo + 3 pain icons.
+ON SLIDE: photo of a crumpled paper constat + 3 pain icons.
+(Malek raises his hand when named.)
 SAY:
-"Last month, a driver in Sfax dented a bumper. It took him three
-weeks and two agency visits to get an answer. His story is the
-market in miniature: KYC is paper-based and redone at every
-insurer; declaring a claim means fifteen to twenty minutes of
-forms then days of processing, office hours only; and the forms
-are in French while the client's real language is derja. Insurers
-lose money on every small claim. Honest clients wait."
+"Last May, Malek — he's right here, on our team — was in a
+three-car accident. Nobody was hurt. The driver at fault was a
+French tourist who had never seen a Tunisian accident report in
+his life. The result: almost TWO HOURS on the roadside, three
+drivers bent over crumpled papers, translating boxes, redrawing
+sketches, hunting for a pen that works — while the cars blocked
+traffic. Two hours... to fill in a paper form. And that paper was
+only the BEGINNING: weeks of processing across three insurers.
+That day we said: this cannot go on. Malek's story is the market
+in miniature: a paper accident report from another century, forms
+in a language that isn't the client's, and weeks of waiting for
+honest clients."
 
 ----------------------------------------------------------------
 SLIDE 3 — VALUE PROPOSITION  (0:40 – 1:00)
@@ -146,15 +152,18 @@ SLIDE 11 — CONCLUSION (ACTION-ORIENTED)  (3:50 – 4:00)
 ON SLIDE: one line + contact: "One pilot. Three months. Measured
 proof." + email/phone.
 SAY:
-"Remember the driver from Sfax — three weeks for a bumper. Give
-us one insurer and three months, and we replace estimates with
-measurements. SANAD: insured in five minutes, declared in three,
-decided with control. Thank you."
+"Remember Malek — two hours on the roadside for one paper form,
+then weeks of waiting. With SANAD, that constat is filled on a
+phone, in each driver's own language, and the decision comes the
+same day. Give us one insurer and three months, and we replace
+estimates with measurements. SANAD: insured in five minutes,
+declared in three, decided with control. Thank you."
 
 ================================================================
 WORKSHOP TIPS — WHERE THIS SCRIPT APPLIES THEM
 ================================================================
-✔ Tell a story (the why) → Sfax driver opens (S2) and closes (S11).
+✔ Tell a story (the why) → Malek's accident (TRUE story, team
+  member present in the room) opens (S2) and closes (S11).
 ✔ Avoid overpromising    → S9 labeled "hypotheses"; IRR refused
                            until pilot data exists.
 ✔ Acknowledge competition→ S7 admits Tractable/Shift have deeper
@@ -235,6 +244,10 @@ DELIVERY TIPS
 - One speaker for the pitch; switch speakers only at Q&A.
 - Eye contact on the jury during S2 (hook) and S11 (ask) — read
   NOTHING on those two.
+- During the hook: the speaker gestures toward Malek; Malek
+  raises a hand or nods. A true story with its witness in the
+  room beats any statistic — and if the jury asks "is that story
+  real?", that's a golden moment.
 - End exactly on: "insured in five minutes, declared in three,
   decided with control."
 ================================================================

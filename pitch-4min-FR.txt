@@ -19,17 +19,23 @@ en trois. »
 ----------------------------------------------------------------
 DIAPO 2 — PROBLÈME / OPPORTUNITÉ  (0:10 – 0:40)
 ----------------------------------------------------------------
-SUR LA DIAPO : photo du conducteur de Sfax + 3 icônes de douleur.
+SUR LA DIAPO : photo d'un constat papier froissé + 3 icônes de
+douleur. (Malek lève la main quand son nom est cité.)
 DIRE :
-« Le mois dernier, un conducteur à Sfax a abîmé son pare-chocs.
-Il lui a fallu trois semaines et deux déplacements en agence pour
-obtenir une réponse. Son histoire, c'est le marché en miniature :
-le KYC est papier, refait chez chaque assureur ; déclarer un
-sinistre, c'est quinze à vingt minutes de formulaires puis des
-jours de traitement, aux heures ouvrables uniquement ; et les
-formulaires sont en français alors que la langue réelle du client,
-c'est la derja. Les assureurs perdent de l'argent sur chaque petit
-sinistre. Les clients honnêtes attendent. »
+« En mai dernier, Malek — il est ici, dans notre équipe — a eu un
+accident à trois voitures. Personne n'était blessé. Le conducteur
+fautif était un touriste français : il n'avait jamais vu un
+constat tunisien de sa vie. Résultat : presque DEUX HEURES au
+bord de la route, trois conducteurs penchés sur des papiers
+froissés, à traduire les cases, refaire les croquis, chercher un
+stylo qui marche — pendant que les voitures bloquaient la
+circulation. Deux heures... pour remplir un papier. Et ce papier
+n'était que le DÉBUT : des semaines de traitement entre trois
+assureurs. Ce jour-là, on s'est dit : ça ne peut plus marcher
+comme ça. L'histoire de Malek, c'est le marché en miniature :
+un constat papier d'un autre siècle, des formulaires dans une
+langue qui n'est pas celle du client, et des semaines d'attente
+pour les clients honnêtes. »
 
 ----------------------------------------------------------------
 DIAPO 3 — PROPOSITION DE VALEUR  (0:40 – 1:00)
@@ -166,15 +172,19 @@ DIAPO 11 — CONCLUSION (ORIENTÉE ACTION)  (3:50 – 4:00)
 SUR LA DIAPO : une ligne + contact : « Un pilote. Trois mois.
 Une preuve mesurée. » + email/téléphone.
 DIRE :
-« Souvenez-vous du conducteur de Sfax — trois semaines pour un
-pare-chocs. Donnez-nous un assureur et trois mois, et nous
-remplaçons les estimations par des mesures. SANAD : assuré en
-cinq minutes, déclaré en trois, décidé sous contrôle. Merci. »
+« Souvenez-vous de Malek — deux heures au bord de la route pour
+un simple constat, puis des semaines d'attente. Avec SANAD, ce
+constat se remplit sur un téléphone, dans la langue de chacun,
+et la décision tombe le jour même. Donnez-nous un assureur et
+trois mois, et nous remplaçons les estimations par des mesures.
+SANAD : assuré en cinq minutes, déclaré en trois, décidé sous
+contrôle. Merci. »
 
 ================================================================
 CONSEILS DU WORKSHOP — OÙ CE SCRIPT LES APPLIQUE
 ================================================================
-✔ Raconter une histoire (le pourquoi) → le conducteur de Sfax
+✔ Raconter une histoire (le pourquoi) → l'accident de Malek
+  (histoire VRAIE, membre de l'équipe présent dans la salle)
   ouvre (D2) et ferme (D11) le pitch.
 ✔ Éviter de survendre → D9 titrée « hypothèses » ; TRI refusé
   tant qu'il n'y a pas de données pilote.
@@ -273,6 +283,11 @@ CONSEILS DE LIVRAISON
   la Q&A.
 - Contact visuel avec le jury sur D2 (hook) et D11 (demande) —
   ne lisez RIEN sur ces deux moments.
+- Pendant le hook : l'orateur désigne Malek d'un geste, Malek
+  lève la main ou hoche la tête. Une histoire vraie avec son
+  témoin dans la salle vaut tous les chiffres du monde — et si
+  le jury demande « c'est une vraie histoire ? », la réponse est
+  un moment en or.
 - Terminez exactement sur : « assuré en cinq minutes, déclaré en
   trois, décidé sous contrôle. »
 ================================================================
